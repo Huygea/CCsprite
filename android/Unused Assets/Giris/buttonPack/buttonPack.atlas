@@ -1,0 +1,120 @@
+
+buttonPack.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+acýlýs ekraný 
+  rotate: false
+  xy: 1, 1
+  size: 1920, 1080
+  orig: 1920, 1080
+  offset: 0, 0
+  index: -1
+
+buttonPack2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+acýlýs ekraný arkaplaný
+  rotate: false
+  xy: 1, 1
+  size: 1920, 1080
+  orig: 1920, 1080
+  offset: 0, 0
+  index: -1
+
+buttonPack3.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ayarlar-alt
+  rotate: false
+  xy: 1, 1
+  size: 1920, 1080
+  orig: 1920, 1080
+  offset: 0, 0
+  index: -1
+
+buttonPack4.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ayarlar
+  rotate: false
+  xy: 1, 1
+  size: 1920, 1080
+  orig: 1920, 1080
+  offset: 0, 0
+  index: -1
+
+buttonPack5.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cýkýs-alt
+  rotate: false
+  xy: 1, 1
+  size: 1920, 1080
+  orig: 1920, 1080
+  offset: 0, 0
+  index: -1
+
+buttonPack6.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+cýkýs
+  rotate: false
+  xy: 1, 1
+  size: 1920, 1080
+  orig: 1920, 1080
+  offset: 0, 0
+  index: -1
+
+buttonPack7.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+play-alt
+  rotate: false
+  xy: 1, 1
+  size: 1920, 1080
+  orig: 1920, 1080
+  offset: 0, 0
+  index: -1
+
+buttonPack8.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+play
+  rotate: false
+  xy: 1, 1
+  size: 1920, 1080
+  orig: 1920, 1080
+  offset: 0, 0
+  index: -1
+
+buttonPack9.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+shop-alt
+  rotate: false
+  xy: 1, 1
+  size: 1920, 1080
+  orig: 1920, 1080
+  offset: 0, 0
+  index: -1
+
+buttonPack10.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+shop
+  rotate: false
+  xy: 1, 1
+  size: 1920, 1080
+  orig: 1920, 1080
+  offset: 0, 0
+  index: -1

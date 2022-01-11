@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CCSprite.iml" filepath="$PROJECT_DIR$/CCSprite.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android/CCSprite.android.iml" filepath="$PROJECT_DIR$/.idea/modules/android/CCSprite.android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/CCSprite.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/CCSprite.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/desktop/CCSprite.desktop.iml" filepath="$PROJECT_DIR$/.idea/modules/desktop/CCSprite.desktop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ios/CCSprite.ios.iml" filepath="$PROJECT_DIR$/.idea/modules/ios/CCSprite.ios.iml" />
+    </modules>
+  </component>
+</project>

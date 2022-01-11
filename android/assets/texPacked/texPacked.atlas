@@ -1,0 +1,176 @@
+
+texPacked.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+crosshair
+  rotate: false
+  xy: 1, 395
+  size: 626, 626
+  orig: 626, 626
+  offset: 0, 0
+  index: -1
+dark
+  rotate: false
+  xy: 1, 1
+  size: 400, 392
+  orig: 400, 392
+  offset: 0, 0
+  index: -1
+kucuktamam
+  rotate: false
+  xy: 403, 1
+  size: 400, 392
+  orig: 400, 392
+  offset: 0, 0
+  index: -1
+openCrate
+  rotate: false
+  xy: 629, 707
+  size: 336, 314
+  orig: 336, 314
+  offset: 0, 0
+  index: -1
+blowtorch
+  rotate: false
+  xy: 629, 405
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+youwin
+  rotate: false
+  xy: 805, 224
+  size: 177, 179
+  orig: 177, 179
+  offset: 0, 0
+  index: -1
+timerWhiteBox
+  rotate: false
+  xy: 931, 695
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+buyuksteampunk
+  rotate: false
+  xy: 805, 121
+  size: 101, 101
+  orig: 101, 101
+  offset: 0, 0
+  index: -1
+ortasteampunk
+  rotate: false
+  xy: 908, 122
+  size: 101, 100
+  orig: 101, 100
+  offset: 0, 0
+  index: -1
+star
+  rotate: false
+  xy: 908, 20
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+button
+  rotate: false
+  xy: 805, 19
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+
+texPacked2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ortatamam
+  rotate: false
+  xy: 1, 463
+  size: 560, 560
+  orig: 560, 560
+  offset: 0, 0
+  index: -1
+cyclops
+  rotate: false
+  xy: 1, 61
+  size: 400, 400
+  orig: 400, 400
+  offset: 0, 0
+  index: -1
+youLose
+  rotate: false
+  xy: 403, 186
+  size: 501, 275
+  orig: 501, 275
+  offset: 0, 0
+  index: -1
+timer
+  rotate: false
+  xy: 403, 1
+  size: 480, 183
+  orig: 480, 183
+  offset: 0, 0
+  index: -1
+kucuksteampunk
+  rotate: false
+  xy: 885, 82
+  size: 97, 102
+  orig: 97, 102
+  offset: 0, 0
+  index: -1
+bombCursor
+  rotate: false
+  xy: 906, 941
+  size: 100, 82
+  orig: 100, 82
+  offset: 0, 0
+  index: -1
+hinge
+  rotate: false
+  xy: 563, 723
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+background
+  rotate: false
+  xy: 563, 496
+  size: 360, 225
+  orig: 360, 225
+  offset: 0, 0
+  index: -1
+
+texPacked3.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+BuyukDisliTamamdir
+  rotate: false
+  xy: 1, 402
+  size: 560, 560
+  orig: 560, 560
+  offset: 0, 0
+  index: -1
+crate
+  rotate: false
+  xy: 1, 131
+  size: 308, 269
+  orig: 308, 269
+  offset: 0, 0
+  index: -1
+bomb
+  rotate: false
+  xy: 563, 723
+  size: 293, 239
+  orig: 293, 239
+  offset: 0, 0
+  index: -1
+uiskin
+  rotate: false
+  xy: 1, 1
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1

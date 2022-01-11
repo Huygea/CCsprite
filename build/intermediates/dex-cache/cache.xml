@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="C:\Users\user\.gradle\caches\modules-2\files-2.1\com.badlogicgames.box2dlights\box2dlights\1.4\3d77ad5b4164fb32fc67e2446e35911bb0aaf0bd\box2dlights-1.4.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="3d77ad5b4164fb32fc67e2446e35911bb0aaf0bd">
+        <dex dex="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\android\build\intermediates\pre-dexed\debug\box2dlights-1.4_fd43f790e113cec301ad2317e78643e8961a697e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\user\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx-freetype\1.9.5\71eba1332b3c2436d3b8e24296a0feb1c01d9e67\gdx-freetype-1.9.5.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="71eba1332b3c2436d3b8e24296a0feb1c01d9e67">
+        <dex dex="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\android\build\intermediates\pre-dexed\debug\gdx-freetype-1.9.5_240dc989c06ebf12cd9075559b4f083338bb6fba.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\user\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx-box2d\1.9.5\c8098219abfe00b849cc43d461b1105fea3a2944\gdx-box2d-1.9.5.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="c8098219abfe00b849cc43d461b1105fea3a2944">
+        <dex dex="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\android\build\intermediates\pre-dexed\debug\gdx-box2d-1.9.5_41d89a6fe971431041c79c4c5fccc160028a79eb.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\user\.gradle\caches\modules-2\files-2.1\com.badlogicgames.ashley\ashley\1.7.0\a7c4083c0a42027a3c03ba7ccecef6cbe1c5f0a4\ashley-1.7.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="a7c4083c0a42027a3c03ba7ccecef6cbe1c5f0a4">
+        <dex dex="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\android\build\intermediates\pre-dexed\debug\ashley-1.7.0_0322d9603f5d3ff289e250ef94554848983ea518.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\user\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx-ai\1.8.0\ec30677d8ab1a8b8aa4b853c5f4e4b1361f50bf5\gdx-ai-1.8.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="ec30677d8ab1a8b8aa4b853c5f4e4b1361f50bf5">
+        <dex dex="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\android\build\intermediates\pre-dexed\debug\gdx-ai-1.8.0_8a9432aca18f5f22d0dab831175d37f51dcca616.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\user\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx-controllers\1.9.5\5a067651ea4cb1402faff77c4f73e8bfc6bc92b5\gdx-controllers-1.9.5.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="5a067651ea4cb1402faff77c4f73e8bfc6bc92b5">
+        <dex dex="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\android\build\intermediates\pre-dexed\debug\gdx-controllers-1.9.5_02a46e8a8c94bdefbe17f6f363b00bf2e9da28b1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\user\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx\1.9.5\dc65bb2f51828c58b1b2b3ac585357204d54ee5f\gdx-1.9.5.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="dc65bb2f51828c58b1b2b3ac585357204d54ee5f">
+        <dex dex="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\android\build\intermediates\pre-dexed\debug\gdx-1.9.5_661e28394ab2e7c8830d9cd946baabca021e500b.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\core\build\libs\core-1.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="4e6a5e53d8dbd8be15cdae964d3820bab5e47e06">
+        <dex dex="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\android\build\intermediates\pre-dexed\debug\core-1.0_b7fe31ffeec1b42978e259f9a9f5b0a5bdc873a7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\user\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx-controllers-android\1.9.5\d5f39f0adb13cabf7ab5b539b162ae89fa693009\gdx-controllers-android-1.9.5.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="d5f39f0adb13cabf7ab5b539b162ae89fa693009">
+        <dex dex="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\android\build\intermediates\pre-dexed\debug\gdx-controllers-android-1.9.5_abe5290f89bf21f880ae9bb123f2022fd6c76932.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\user\.gradle\caches\modules-2\files-2.1\com.badlogicgames.gdx\gdx-backend-android\1.9.5\293bbe05bfb5ca812c849e4d1f494f56509d5a6e\gdx-backend-android-1.9.5.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="293bbe05bfb5ca812c849e4d1f494f56509d5a6e">
+        <dex dex="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\android\build\intermediates\pre-dexed\debug\gdx-backend-android-1.9.5_c2e6b2cb7638f3502fd65ae137d75e68e4247ce1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\android\libs\tween-engine-api.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.1"
+        sha1="8be8beb70b7ccae059d523e56670f6e44fb1821f">
+        <dex dex="E:\AndroidStudioProjects\AndroidStudioProjects\CCSprite\android\build\intermediates\pre-dexed\debug\tween-engine-api_d8c8f55a815a7f927464ebd94c683f0c76fe6b6a.jar" />
+    </item>
+
+</items>

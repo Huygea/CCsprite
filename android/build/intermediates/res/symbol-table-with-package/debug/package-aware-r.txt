@@ -1,0 +1,4 @@
+com.mygdx.game
+drawable ic_launcher
+string app_name
+style GdxTheme
