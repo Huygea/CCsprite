@@ -12,14 +12,22 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+import levels.Level1;
+import levels.Level3;
 
 import static com.badlogic.gdx.Gdx.input;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
@@ -37,7 +45,8 @@ public class MainMenuScreen implements Screen {
     Preferences prefs;
     Stage stage;
     Viewport viewport;
-    private Image options,  exit, play,shop,backgroundmain;
+    private Image options, logo, tutorial,  exit, play,shop,backgroundmain, large,mid,small;
+
 
     private TextureAtlas tAtlas;
     private Vector2 newTouch,touch;
@@ -72,21 +81,26 @@ public class MainMenuScreen implements Screen {
 
 
         tAtlas = new TextureAtlas("texPacked/packMan.atlas");
-        options =new Image( tAtlas.findRegion("options"));
-        exit = new Image(tAtlas.findRegion("exit"));
-        play =new Image( tAtlas.findRegion("play"));
-        shop = new Image(tAtlas.findRegion("shop"));
-        backgroundmain = new Image(tAtlas.findRegion("backgroundmain"));
+
+        options = new Image(new Texture("options.png"));
+        exit = new Image(new Texture("exit.png"));
+        play = new Image(new Texture("play.png"));
+        shop = new Image(new Texture("shop.png"));
+        tutorial = new Image(new Texture("tutorial.png"));
+        logo = new Image(new Texture("logo.png"));
+        backgroundmain = new Image(new Texture("entrybg.png"));
+
+        large = new Image(new Texture("largepin.png"));
+        mid = new Image(new Texture("mediumpin.png"));
+        small = new Image(new Texture("smallpin.png"));
+
+
+        large.setSize(16f*3,16f*3);
+        mid.setSize(10.8f,10.8f);
+        small.setSize(5.5f*3,5.5f*3);
 
 
 
-
-        loaderGear = new Sprite(tAtlas.findRegion("loadingGear"));
-
-        loaderGear.setOrigin(loaderGear.getWidth()/2, loaderGear.getHeight()/2);
-        loaderGear.setScale(0.3f);
-
-        loaderGear.setPosition(0,0);
 
 
 
@@ -114,11 +128,14 @@ public class MainMenuScreen implements Screen {
         input.setInputProcessor(stage);
 
 
-        backgroundmain.setSize(VariableCalls.WORLD_WIDTH,VariableCalls.WORLD_HEIGHT);
-        options.setSize(48.5f,49);
-        exit.setSize(48,49);
-        play.setSize(48,49);
-        shop.setSize(48,49);
+        backgroundmain.setSize(VariableCalls.WORLD_WIDTH, VariableCalls.WORLD_WIDTH/1.136f);
+        backgroundmain.setColor(1,1,1,0.60f);
+        options.setSize(66.38f,15);
+        exit.setSize(34.64f,15);
+        play.setSize(38.26f,15);
+        shop.setSize(37.97f,15);
+        tutorial.setSize(73.89f,15);
+        logo.setSize(100,49.5f);
 
 
 
@@ -128,47 +145,52 @@ public class MainMenuScreen implements Screen {
         click = Gdx.audio.newSound(Gdx.files.internal("click.mp3"));
 
 
-        play.setPosition(55-play.getWidth()/2,65-play.getHeight()/2);
+
+
+
+        play.setPosition(160.87f,110);
         play.setOrigin(play.getWidth()/2,play.getHeight()/2);
 
-        shop.setPosition(105-shop.getWidth()/2, 87-shop.getHeight()/2);
+        shop.setPosition(161.02f,87);
         shop.setOrigin(shop.getWidth()/2,shop.getHeight()/2);
 
-        options.setPosition(155-options.getWidth()/2, 65-options.getHeight()/2);
+        options.setPosition(146.81f,64);
         options.setOrigin(options.getWidth()/2, options.getHeight()/2);
 
-        exit.setPosition(204-exit.getWidth()/2, 85-exit.getHeight()/2);
+        exit.setPosition(162.68f,18);
         exit.setOrigin(exit.getWidth()/2,exit.getHeight()/2);
 
+        logo.setPosition(10,65.5f);
+
+        large.setPosition(40,15);
+        small.setPosition(78,12);
+
+        large.setOrigin(Align.center);
+        small.setOrigin(Align.center);
 
 
-        shop.setScale(0.98f);
-        shop.setScale(1/0.98f);
+        large.setColor(205f/255f,0,120f/255f,1);
+        small.setColor(255/255f,158/255f,84f/255f,1);
+
+        tutorial.setPosition(143.06f,41);
+        tutorial.setOrigin(tutorial.getWidth()/2,tutorial.getHeight()/2);
 
 
-       play.setScale(0.98f);
-        play.setScale(1/0.98f);
 
 
-        options.setScale(0.98f);
-        options.setScale(1/0.98f);
-
-
-        exit.setScale(0.98f);
-        exit.setScale(1/0.98f);
 
 
 //To Start a Task:
 
         backgroundmain.setPosition(0,0);
-
+        newTouch = new Vector2();
 
         exit.addListener(new InputListener(){
 
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
 
-                newTouch = new Vector2(x,y);
+
 
             }
 
@@ -189,7 +211,10 @@ public class MainMenuScreen implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 click.play(1.0f);
 
+                newTouch.set(x,y);
                 exit.setScale(1f/0.98f);
+
+                newTouch = new Vector2(x,y);
 
                 if((Math.abs(newTouch.x - touch.x)<20 && Math.abs(newTouch.y - touch.y)<20) )
 
@@ -208,7 +233,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
 
-                newTouch = new Vector2(x,y);
+
 
             }
 
@@ -228,7 +253,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 click.play(1.0f);
-
+                newTouch.set(x,y);
                 shop.setScale(1/0.98f);
 
                 if((Math.abs(newTouch.x - touch.x)<20 &&Math.abs(newTouch.y - touch.y)<20) )
@@ -248,7 +273,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
 
-                newTouch = new Vector2(x,y);
+
 
             }
 
@@ -268,7 +293,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 click.play(1.0f);
-
+                newTouch.set(x,y);
                 play.setScale(1f/0.98f);
 
                 if((Math.abs(newTouch.x - touch.x)<20 &&Math.abs(newTouch.y - touch.y)<20) )
@@ -276,7 +301,8 @@ public class MainMenuScreen implements Screen {
                 {
 
 
-                    switchScreen(game,new LevelSelection(game));
+                   // switchScreen(game,new LevelSelection(game));
+                    switchScreen(game,new Level1(game));
 
 
                 }
@@ -289,7 +315,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
 
-                newTouch = new Vector2(x,y);
+
 
             }
 
@@ -311,7 +337,7 @@ public class MainMenuScreen implements Screen {
                 click.play(1.0f);
 
                 options.setScale(1f/0.98f);
-
+                newTouch.set(x,y);
                 if((Math.abs(newTouch.x - touch.x)<20 &&Math.abs(newTouch.y - touch.y)<20) )
 
                 {
@@ -325,7 +351,46 @@ public class MainMenuScreen implements Screen {
             }
         });
 
+        tutorial.addListener(new InputListener(){
 
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+
+
+
+            }
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                touch.set(x,y);
+
+
+                tutorial.setScale(0.98f);
+                click.play(1.0f);
+
+
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                click.play(1.0f);
+
+                tutorial.setScale(1f/0.98f);
+                newTouch.set(x,y);
+                if((Math.abs(newTouch.x - touch.x)<20 &&Math.abs(newTouch.y - touch.y)<20) )
+
+                {
+
+
+
+                 //   switchScreen(game, new OptionsMenu(game));
+
+                }
+
+            }
+        });
 
 
 
@@ -333,13 +398,23 @@ public class MainMenuScreen implements Screen {
         stage.getRoot().addAction(fadeIn(0.5f));
 
         stage.addActor(backgroundmain);
+
+
+
+
         stage.addActor(play);
         stage.addActor(options);
 
         stage.addActor(exit);
         stage.addActor(shop);
+        stage.addActor(tutorial);
+        stage.addActor(logo);
+        stage.addActor(large);
+        stage.addActor(small);
+
 
     }
+
     @Override
     public void render(float delta){
 
@@ -362,7 +437,15 @@ public class MainMenuScreen implements Screen {
         game.batch.end();
 
 
+
+
+        small.setRotation(small.getRotation()-1);
+        large.setRotation(large.getRotation()+0.5f);
         stage.act();
+
+
+
+
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.BACK) && VariableCalls.buttonCheck){
 

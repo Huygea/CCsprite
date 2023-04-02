@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -41,6 +42,7 @@ public class OptionsMenu implements Screen {
     TextButton.TextButtonStyle textButtonStyle;
     TextButton leftSpeed,rightSpeed,leftUi,rightUi, resume, quit;
     Skin skin, smallSkin;
+    Image backGroundt;
    // Controller controller;
     final ClickClack game;
     public OptionsMenu(final ClickClack game) {
@@ -66,7 +68,7 @@ public class OptionsMenu implements Screen {
 
 
 
-        skin.getFont("default-font").getData().setScale(0.2f);
+        skin.getFont("default-font").getData().setScale(0.1f);
 
 
 
@@ -74,7 +76,7 @@ public class OptionsMenu implements Screen {
 
 
 
-        smallSkin.getFont("default-font").getData().setScale(0.1f);
+        smallSkin.getFont("default-font").getData().setScale(0.05f);
 
 
 
@@ -121,7 +123,8 @@ public class OptionsMenu implements Screen {
 
 
 
-
+        backGroundt = new Image(new Texture("entrybg.png"));
+        backGroundt.setColor(1,1,1,0.1f);
 
         uiSide = new Label(stringL, smallSkin);
         dragPoint = new Label(stringA, smallSkin);
@@ -130,6 +133,9 @@ public class OptionsMenu implements Screen {
         buttonAlign = new Label("UI Alignment", smallSkin);
 
 
+        backGroundt.setSize(240,135);
+        backGroundt.setPosition(0,0);
+        stage.addActor(backGroundt);
 
             optionsTable = new Table();
 
@@ -149,7 +155,9 @@ public class OptionsMenu implements Screen {
 
             optionsTable.add().pad(5).row();
 
-            optionsTable.add(dragSpeed).size(30).height(20);
+            optionsTable.add(dragSpeed).size(
+
+                    30).height(20);
             optionsTable.add();
             optionsTable.add(leftSpeed).size(10).height(20);
             optionsTable.add(dragPoint).size(30).height(20).center();

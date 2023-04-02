@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class allowedList {
 
-    public Vector3[][][] allowedList = new Vector3[VariableCalls.world_dotx_count+2][VariableCalls.world_doty_count+2][4];
+    public Vector3[][][] allowedList = new Vector3[100][100][4];
 
     public void allowedList(int x , int y , int z, float xAxis, float yAxis, int GearType){
 

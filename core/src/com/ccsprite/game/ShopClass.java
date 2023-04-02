@@ -59,9 +59,10 @@ final ClickClack game;
     TextButton openChest,buyOneBomb,buyOneBullet, buyOneOil, buyGold, buyTenBombs, buyTenBullets,buyTenOils;
 
 
-    TextureRegion dark,star,button,timer,whiteBox,one,crossHair,crate,openChestC, explosion,youLose,kucuk,orta,buyuk,bombC,kucuk1,orta1,buyuk1,backGroundt,hingeTex,youwinT,blowtorcht,creatureTexture
+    Image crossHair, bombC,backGroundt,hingeTex,blowtorcht
             ;
     TextureRegion uiSkin;
+    Texture cratecolorful,crateblue, cratepurple,crateorange,createwhite,openedboxorange,openedboxpurple,openedboxwhite,openedboxblue;
 
     Label award;
     Skin skin;
@@ -80,6 +81,7 @@ final ClickClack game;
 
         textButtonStyle = new TextButton.TextButtonStyle();
         prefs.getInteger("chest", 0);
+        prefs.putInteger("chest",100);
         prefs.getInteger("bomb", 5);
         prefs.getInteger("bullet", 5);
         prefs.getInteger("oil",5);
@@ -89,46 +91,31 @@ final ClickClack game;
 
 
         texAtlas = new TextureAtlas("texPacked/texPacked.atlas");
-        kucuk = texAtlas.findRegion("kucuktamam");
-        orta = texAtlas.findRegion("ortatamam");
-        buyuk = texAtlas.findRegion("BuyukDisliTamamdir");
-        bombC = texAtlas.findRegion("bomb");
-        kucuk1 = texAtlas.findRegion("kucuksteampunk");
-        orta1 = texAtlas.findRegion("ortasteampunk");
-        buyuk1 = texAtlas.findRegion("buyuksteampunk");
-        backGroundt = texAtlas.findRegion("background");
-        hingeTex = texAtlas.findRegion("hinge");
-        youwinT = texAtlas.findRegion("youwin");
-        blowtorcht = texAtlas.findRegion("blowtorch");
-        creatureTexture = texAtlas.findRegion("cyclops");
-        youLose = texAtlas.findRegion("youLose");
-        explosion = texAtlas.findRegion("explosion");
-        one = texAtlas.findRegion("one");
-        whiteBox = texAtlas.findRegion("timerWhiteBox");
-        timer = texAtlas.findRegion("timer");
-        button = texAtlas.findRegion("button");
-        dark = texAtlas.findRegion("dark");
 
 
-        star = texAtlas.findRegion("star");
-
-        openChestC = texAtlas.findRegion("openCrate");
-
+        bomb = new Image(new Texture("bomb.png"));
+        backGroundt = new Image(new Texture("bg.png"));
+        oil = new Image(new Texture("oil.png"));
+        sniper = new Image(new Texture("sniper.png"));
+        gold = new Image(new Texture("gold.png"));
 
 
 
         uiSkin = texAtlas.findRegion("uiskin");
+        chest = new Image (new Texture("chestcolorful.png"));
+
+        cratecolorful = new Texture("chestcolorful.png");
+        createwhite = new Texture("chestwhite.png");
+        crateblue = new Texture("chestblue.png");
+        crateorange = new Texture("chestorange.png");
+        cratepurple = new Texture("chestpurple.png");
+//TODO
+        openedboxblue = new Texture("openedboxblue.png");
+        openedboxorange = new Texture("openedboxorange.png");
+        openedboxpurple = new Texture("openedboxpurple.png");
+        openedboxwhite = new Texture("openedboxwhite.png");
 
 
-
-
-
-
-        crate = texAtlas.findRegion("crate");
-
-
-
-        crossHair = texAtlas.findRegion("crosshair");
 
 
 
@@ -138,7 +125,7 @@ final ClickClack game;
 
 
 
-        skin.getFont("default-font").getData().setScale(0.2f);
+        skin.getFont("default-font").getData().setScale(0.1f);
 
 
 
@@ -150,13 +137,13 @@ final ClickClack game;
 
 
 
-        smallSkin.getFont("default-font").getData().setScale(0.1f);
+        smallSkin.getFont("default-font").getData().setScale(0.05f);
 
 
 
 
-        closedChest = new Sprite(crate);
-        openedChest = new Sprite(openChestC);
+        closedChest = new Sprite(cratecolorful);
+        openedChest = new Sprite(openedboxwhite);
 
         textButtonStyle.font = smallSkin.getFont("default-font");
         textButtonStyle.downFontColor = new Color(0.2f,0.4f,0,1);
@@ -174,11 +161,7 @@ final ClickClack game;
 
         table = new Table();
         table.setPosition(VariableCalls.WORLD_WIDTH/2 - table.getWidth()/2, VariableCalls.WORLD_HEIGHT/2 - table.getHeight()/2);
-        chest = new Image (crate);
-        bomb = new Image (bombC);
-        sniper = new Image(crossHair);
-        oil = new Image(blowtorcht);
-        gold = new Image(hingeTex);
+
 
 
 
@@ -197,7 +180,7 @@ final ClickClack game;
         oilLabel.setAlignment(center);
         goldLabel.setAlignment(center);
         award = new Label("", smallSkin);
-        openChest = new TextButton("Open a\nChest", smallSkin);
+        openChest = new TextButton("Open a\nPresent", smallSkin);
         buyOneBomb = new TextButton("Buy 1", smallSkin);
         buyOneBullet = new TextButton("Buy 1", smallSkin);
 
@@ -438,22 +421,22 @@ final ClickClack game;
 
                     if(rareIndicator<=50)
                     {
-                        closedChest.setColor(1,1,1,1);
-                        openedChest.setColor(1,1,1,1);
+                       closedChest.set(new Sprite(createwhite));
+                       openedChest.set(new Sprite(openedboxwhite));
 
 
 
                     }
                         if (rareIndicator > 50 && rareIndicator <= 90)
                         {
-                            closedChest.setColor(0,0.2f,0.5f,1);
-                            openedChest.setColor(0,0.2f,0.5f,1);
+                            closedChest.set(new Sprite(crateblue));
+                            openedChest.set(new Sprite(openedboxblue));
 
                         }
                             if (rareIndicator > 90 && rareIndicator < 99)
                             {
-                                closedChest.setColor(0.6f,0,0.7f,1);
-                                openedChest.setColor(0.6f,0,0.7f,1);
+                                closedChest.set(new Sprite(cratepurple));
+                                openedChest.set(new Sprite(openedboxpurple));
 
 
 
@@ -461,8 +444,8 @@ final ClickClack game;
                     if (rareIndicator == 99 || rareIndicator == 100)
                             {
 
-                                closedChest.setColor(0.5f,1f,0.5f,1);
-                                openedChest.setColor(0.5f,1f,0.5f,1);
+                                closedChest.set(new Sprite(crateorange));
+                                openedChest.set(new Sprite(openedboxorange));
 
 
 
@@ -662,12 +645,12 @@ if(awardShow){
 
             game.batch.begin();
 
-            closedChest.setSize(VariableCalls.WORLD_WIDTH/2, VariableCalls.WORLD_HEIGHT/2);
+            closedChest.setSize(120, 120*0.886f );
             closedChest.setPosition(VariableCalls.WORLD_WIDTH/2 - closedChest.getWidth()/2, VariableCalls.WORLD_HEIGHT/2 - closedChest.getHeight()/2);
             closedChest.draw(game.batch);
             shake -= delta;
             closedChest.setOrigin(closedChest.getWidth()/2,closedChest.getHeight()/2);
-            closedChest.setRotation((float)Math.sin(1000*delta));
+            closedChest.setRotation((float)Math.sin(10000*delta));
 
             game.batch.end();
         }
@@ -679,10 +662,10 @@ if(awardShow){
             game.batch.begin();
 
             display -= delta;
-            openedChest.setSize(VariableCalls.WORLD_WIDTH / 2, VariableCalls.WORLD_HEIGHT / 2);
+            openedChest.setSize(150, 150*0.97f);
             openedChest.setPosition(VariableCalls.WORLD_WIDTH / 2 - openedChest.getWidth() / 2, VariableCalls.WORLD_HEIGHT / 2 - openedChest.getHeight() / 2);
             openedChest.draw(game.batch);
-            award.setPosition(openedChest.getX() + openedChest.getWidth()/2 - award.getWidth(), openedChest.getY()+openedChest.getHeight()/2-award.getHeight());
+            award.setPosition(openedChest.getX() + openedChest.getWidth()/2 - 10, openedChest.getY()+openedChest.getHeight()/2);
             award.setText(yazi);
             closedChest.setRotation(0);
 

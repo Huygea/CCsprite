@@ -270,13 +270,15 @@ public class PauseStage implements Screen {
 
     Skin skin;
     Skin smallSkin;
-    public PauseStage(final ClickClack game) {
+    int levelnum;
+    public PauseStage(final ClickClack game,int levelnum) {
 
+        this.levelnum = levelnum;
         skin = new Skin(Gdx.files.internal("uiskin.json"), new TextureAtlas("uiskin.atlas"));
 
 
 
-        skin.getFont("default-font").getData().setScale(0.2f);
+        skin.getFont("default-font").getData().setScale(0.1f);
 
 
 
@@ -284,7 +286,7 @@ public class PauseStage implements Screen {
 
 
 
-        smallSkin.getFont("default-font").getData().setScale(0.1f);
+        smallSkin.getFont("default-font").getData().setScale(0.05f);
 
 
         this.game = game;
@@ -347,7 +349,7 @@ public class PauseStage implements Screen {
 
 
 
-        controller = new Controller(game);
+        controller = new Controller(game, levelnum);
 
 
 

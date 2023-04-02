@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -57,13 +59,20 @@ import static com.ccsprite.game.VariableCalls.WORLD_WIDTH;
 public class Level5 extends ApplicationAdapter implements Screen {
 
 
-    //WORLD DOT SIZES
 
 
-    int levelNumber = 1;
-    int difficultyLevel = 1;
+
+
+
+
+   //LEVEL NUMBER
+    int levelNumber = 5;
+
+    int difficultyLevel = 2;
     private boolean crateGot = true;
 
+
+    private int nextLevel = levelNumber +1;
 
 
 
@@ -84,18 +93,35 @@ public class Level5 extends ApplicationAdapter implements Screen {
     private boolean crateBoolean;
     //CREATURE 1 VARIABLES
     private  float jumpDelay = 3;
-    private Sprite creatureSprite;
+    private Image creatureSprite;
     private  boolean jump = true;
     private Sprite hingeSprite;
     private Sprite [][] hingeArray;
     private boolean jumpDelayBoolean = true;
     private boolean explosionBool = false;
     private Sprite chestSprite;
+    private Rectangle rec1,rec2;
     Label threetwoone;
 
 
-    TextureRegion dark,star,button,timer,whiteBox,one,crossHair,crate,openChest, explosion,youLose,kucuk,orta,buyuk,bomb,kucuk1,orta1,buyuk1,backGroundt,hingeTex,youwinT,blowtorcht,creatureTexture
-            ;
+    TextureRegion dark;
+    TextureRegion star;
+    TextureRegion button;
+    TextureRegion timer;
+    TextureRegion whiteBox;
+    TextureRegion one;
+    TextureRegion crossHair;
+    TextureRegion crate;
+    TextureRegion openChest;
+    TextureRegion explosion;
+    TextureRegion youLose;
+    TextureRegion bomb;
+    Texture hingeTex;
+    TextureRegion youwinT;
+    TextureRegion blowtorcht;
+
+    private Texture kucuk, buyuk, orta, kucuk1, orta1, buyuk1, backGroundt;
+
     TextureRegion uiSkin;
 
     Texture explosions;
@@ -113,7 +139,6 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
     private boolean crateHad=false;
-    private int nextLevel = levelNumber +1;
     private boolean bullethit = false;
     private float crateDecay;
     private Vector2 [][] brokenHingeContainer;
@@ -134,7 +159,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
     private float checkTimer2= 0.2f;
 
     private float crateTimer;
-    private Sprite creatureSprite2;
+    private Image creatureSprite2;
     private  boolean jump2 = true;
     private boolean jumpDelayBoolean2 = true;
     private Sprite [][] shadowSprite;
@@ -192,6 +217,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
     private Vector3 cameraPos;
 
     private Sprite sprite;
+    private Sprite sprite2;
     private Vector3 [][][] spriteArray;
     private  Vector2 [][] isItRotating;
     private  Sprite [][] spriteContainer;
@@ -217,16 +243,22 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
     static int goalStarterX;
     static int goalStarterY ;
+    int goalGearType = 2;
+
+    static int goalStarterX2;
+    static int goalStarterY2;
+    int goalGearType2 = 1;
 
 
 
+    public Texture creatureTexture1, creatureTexture2;
 
 
     static int starterX =0;
     static int starterY =0;
 
     int starterGearType = 1;
-    int goalGearType = 1;
+
 
     private boolean [][] isThisRolling;
 
@@ -235,6 +267,8 @@ public class Level5 extends ApplicationAdapter implements Screen {
     allowedList aList;
 
     Vector2 lastTouchedPos;
+    public boolean isLevelPassed;
+
 
     Randomizer randomizer;
     private int crX;
@@ -252,10 +286,11 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
 
+
     public void init(final ClickClack game){
         VariableCalls.confirmBoolean = false;
 
-        VariableCalls.levelNum = levelNumber;
+
         VariableCalls.gameStart = true;
         fadeIn = 300;
         commenceCounter = 400;
@@ -265,18 +300,20 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
         texAtlas = new TextureAtlas("texPacked/texPacked.atlas");
-        kucuk = texAtlas.findRegion("kucuktamam");
-        orta = texAtlas.findRegion("ortatamam");
-        buyuk = texAtlas.findRegion("BuyukDisliTamamdir");
-        bomb = texAtlas.findRegion("bomb");
-        kucuk1 = texAtlas.findRegion("kucuksteampunk");
-        orta1 = texAtlas.findRegion("ortasteampunk");
-        buyuk1 = texAtlas.findRegion("buyuksteampunk");
-        backGroundt = texAtlas.findRegion("background");
-        hingeTex = texAtlas.findRegion("hinge");
+        kucuk = new Texture("small.png");
+        orta = new Texture("medium.png");
+        buyuk = new Texture("large.png");
+       // bomb = texAtlas.findRegion("bomb");
+        bomb = new Sprite(new Texture("bomb.png"));
+        kucuk1 = new Texture("smallpin.png");
+        orta1 = new Texture("mediumpin.png");
+        buyuk1 = new Texture("largepin.png");
+        backGroundt = new Texture("bg.png");
+        hingeTex = new Texture("hinge.png");
         youwinT = texAtlas.findRegion("youwin");
-        blowtorcht = texAtlas.findRegion("blowtorch");
-        creatureTexture = texAtlas.findRegion("cyclops");
+        blowtorcht = new Sprite(new Texture("oil.png"));
+        creatureTexture1 = new Texture("creature1.png");
+        creatureTexture2 = new Texture("creature2.png");
         youLose = texAtlas.findRegion("youLose");
         explosion = texAtlas.findRegion("explosion");
         one = texAtlas.findRegion("one");
@@ -304,7 +341,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
 
-        crossHair = texAtlas.findRegion("crosshair");
+        crossHair = new Sprite(new Texture("sniper.png"));
 
 
 
@@ -314,7 +351,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
 
-        skin.getFont("default-font").getData().setScale(0.2f);
+        skin.getFont("default-font").getData().setScale(0.1f);
 
 
 
@@ -322,11 +359,13 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
 
-        smallSkin.getFont("default-font").getData().setScale(0.1f);
+        smallSkin.getFont("default-font").getData().setScale(0.05f);
         explosions  =new Texture("explosion.png");
 
         bulletHitTex = new Texture("fireBullet.png");
 
+        rec1 = new Rectangle();
+        rec2 = new Rectangle();
 
         bulletFrames = new TextureRegion[4];
         TextureRegion [][] tempBulletFrames = TextureRegion.split(bulletHitTex,25,25);
@@ -384,13 +423,23 @@ public class Level5 extends ApplicationAdapter implements Screen {
         bombAmount = prefs.getInteger("bomb",5);
         oilAmount = prefs.getInteger("oil",5);
         bulletAmount = prefs.getInteger("bullet",5);
+        isLevelPassed = prefs.getBoolean(getClass().getName(),true);
         prefs.flush();
-        world_dotx_count =(int) vd.callSetter(levelNumber).x;
-        world_doty_count =(int) vd.callSetter(levelNumber).y;
+
+
+        //WORLD DOTS
+        world_dotx_count = 19;
+        world_doty_count = 8;
+
+
+
+
         goalStarterX = world_dotx_count-1 ;
         goalStarterY = world_doty_count-1;
 
 
+        goalStarterX2 = world_dotx_count-1 ;
+        goalStarterY2 = 0;
 
 
         randomizer = new Randomizer();
@@ -401,7 +450,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
         //levelPassSprite.setSize(1,1);
 
 
-        allowedListChest = new Vector2[(VariableCalls.world_doty_count+1 )* (VariableCalls.world_dotx_count+1) * 4];
+        allowedListChest = new Vector2[(world_doty_count+1 )* (world_dotx_count+1) * 4];
 
         crateTimer = 5;
         crateDecay = 10;
@@ -447,22 +496,23 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
 
-        controller = new Controller(game);
-        pS = new PauseStage(game);
+        controller = new Controller(game,levelNumber);
+        pS = new PauseStage(game,levelNumber);
 
 
         youwin = new Sprite(youwinT);
 
 
-        creatureSprite = new Sprite(creatureTexture);
-        creatureSprite.setSize(5,5);
+        creatureSprite = new Image(creatureTexture1);
+        creatureSprite.setSize(2.1f,1.8f/0.293f);
         creaturePosition = new Vector2[world_dotx_count][world_doty_count];
 
-        creatureSprite2 = new Sprite(creatureTexture);
-        creatureSprite2.setSize(5,5);
+        creatureSprite2 = new Image(creatureTexture2);
+        creatureSprite2.setSize(2.1f,1.8f/0.293f);
         creaturePosition2 = new Vector2[world_dotx_count][world_doty_count];
 
         blowtorch = new Sprite(blowtorcht);
+
 
 
         hingeSprite = new Sprite(hingeTex);
@@ -504,14 +554,15 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
         viewport = new FitViewport(WORLD_WIDTH/2 , VariableCalls.WORLD_HEIGHT/2,cam );
         stage = new Stage(viewport, game.batch);
-
-        chestSprite = new Sprite(crate);
+        stage.addActor(creatureSprite);
+        stage.addActor(creatureSprite2);
+        chestSprite = new Sprite(new Texture("chest.png"));
 
         chestSprite.setPosition(1000,1000);
         controller.gearImg.setColor(Color.YELLOW);
         backGround = new Sprite(backGroundt);
-        backGround.setSize(WORLD_WIDTH*2,VariableCalls.WORLD_HEIGHT*2);
-        backGround.setPosition(-WORLD_WIDTH/2,-VariableCalls.WORLD_HEIGHT/2);
+        backGround.setSize(WORLD_WIDTH,VariableCalls.WORLD_HEIGHT);
+        backGround.setPosition(-WORLD_WIDTH/4,-VariableCalls.WORLD_HEIGHT/4);
 
         a = creaturePosition[crX][crY].x;
         b = creaturePosition[crX][crY].y;
@@ -529,7 +580,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
         Gdx.input.setInputProcessor(im);
 //CONTROLS ARE HERE
 
-        for(int chestX = 0; chestX<VariableCalls.world_dotx_count+1 * VariableCalls.world_doty_count+1; chestX++){
+        for(int chestX = 0; chestX<world_dotx_count+1 * world_doty_count+1; chestX++){
 
 
             allowedListChest[chestX]=new Vector2(0,0);
@@ -541,6 +592,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
         crateBoolean = true;
 
+        //ThumbDown and Drag Controls
         stage.addListener(new InputListener() {
 
 
@@ -582,17 +634,17 @@ public class Level5 extends ApplicationAdapter implements Screen {
         if (VariableCalls.prevRand == 1) {
             nextGear = new Image(kucuk1);
 
-            nextGear.setSize(5.5f, 5.5f);
+            nextGear.setSize(5.5f*2, 5.5f*2);
         }
         if (VariableCalls.prevRand == 2) {
             nextGear = new Image(orta1);
 
-            nextGear.setSize(10.8f, 10.8f);
+            nextGear.setSize(10.8f*2, 10.8f*2);
         }
         if (VariableCalls.prevRand == 3) {
             nextGear = new Image(buyuk1);
 
-            nextGear.setSize(16f, 16f);
+            nextGear.setSize(16f*2, 16f*2);
         }
 
         nextGear.setPosition(15 - nextGear.getWidth()/2, VariableCalls.WORLD_HEIGHT-15 - nextGear.getHeight()/2);
@@ -916,12 +968,26 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
         sprite.setPosition(pointCoordinates[goalStarterX][goalStarterY].x- sprite.getWidth()/2, pointCoordinates[goalStarterX][goalStarterY].y - sprite.getHeight()/2);
 
+        if(goalGearType2 ==1){
+            sprite2 = new Sprite(kucuk1);
+            sprite2.setSize(5.5f, 5.5f);}
+        if(goalGearType2==2){
+            sprite2 = new Sprite(orta1);
+            sprite2.setSize(10.8f, 10.8f);}
+        if(goalGearType2==3){
+            sprite2 = new Sprite(buyuk1);
+            sprite2.setSize(16f, 16f);}
+
+        sprite2.setPosition(pointCoordinates[goalStarterX2][goalStarterY2].x- sprite2.getWidth()/2, pointCoordinates[goalStarterX2][goalStarterY2].y - sprite2.getHeight()/2);
 
 
 
         spriteArray[goalStarterX][goalStarterY][0] = new Vector3(goalStarterX,goalStarterY,goalGearType);
+        spriteArray[goalStarterX2][goalStarterY2][0] = new Vector3(goalStarterX2,goalStarterY2,goalGearType2);
         isItRotating[goalStarterX][goalStarterY] = new Vector2(0,0.5f);
+        isItRotating[goalStarterX2][goalStarterY2] = new Vector2(0,0.5f);
         spriteContainer[goalStarterX][goalStarterY] = sprite;
+        spriteContainer[goalStarterX2][goalStarterY2] = sprite2;
         if (goalGearType == 1) {
             forbid.forbidList(goalStarterX, goalStarterY, 1, goalStarterX, goalStarterY, 1);
             forbid.forbidList(goalStarterX, goalStarterY, 2, goalStarterX, goalStarterY, 2);
@@ -1130,8 +1196,215 @@ public class Level5 extends ApplicationAdapter implements Screen {
         }
 
 
+///////////////////////////////////
 
 
+        if (goalGearType2 == 1) {
+            forbid.forbidList(goalStarterX2, goalStarterY2, 1, goalStarterX2, goalStarterY2, 1);
+            forbid.forbidList(goalStarterX2, goalStarterY2, 2, goalStarterX2, goalStarterY2, 2);
+            forbid.forbidList(goalStarterX2, goalStarterY2, 3, goalStarterX2, goalStarterY2, 3);
+
+            if (goalStarterX2 + 1 < world_dotx_count)
+                forbid.forbidList(goalStarterX2 + 1, goalStarterY2, 3, goalStarterX2 + 1, goalStarterY2, 3);
+            if (goalStarterY2 + 1 < world_doty_count)
+                forbid.forbidList(goalStarterX2, goalStarterY2 + 1, 3, goalStarterX2, goalStarterY2 + 1, 3);
+            if (goalStarterX2 - 1 >= 0)
+                forbid.forbidList(goalStarterX2 - 1, goalStarterY2, 3, goalStarterX2 - 1, goalStarterY2, 3);
+            if (goalStarterY2 - 1 >= 0)
+                forbid.forbidList(goalStarterX2, goalStarterY2 - 1, 3, goalStarterX2, goalStarterY2 - 1, 3);
+
+
+        }
+        if (goalGearType2 == 2) {
+            forbid.forbidList(goalStarterX2, goalStarterY2, 1, goalStarterX2, goalStarterY2, 1);
+            forbid.forbidList(goalStarterX2, goalStarterY2, 2, goalStarterX2, goalStarterY2, 2);
+            forbid.forbidList(goalStarterX2, goalStarterY2, 3, goalStarterX2, goalStarterY2, 3);
+
+            if (goalStarterX2 + 1 < world_dotx_count)
+                forbid.forbidList(goalStarterX2 + 1, goalStarterY2, 2, goalStarterX2 + 1, goalStarterY2, 2);
+            if (goalStarterY2 + 1 < world_doty_count)
+                forbid.forbidList(goalStarterX2, goalStarterY2 + 1, 2, goalStarterX2, goalStarterY2 + 1, 2);
+            if (goalStarterX2 - 1 >= 0)
+                forbid.forbidList(goalStarterX2 - 1, goalStarterY2, 2, goalStarterX2 - 1, goalStarterY2, 2);
+            if (goalStarterY2 - 1 >= 0)
+                forbid.forbidList(goalStarterX2, goalStarterY2 - 1, 2, goalStarterX2, goalStarterY2 - 1, 2);
+
+            if (goalStarterX2 + 1 < world_dotx_count)
+                forbid.forbidList(goalStarterX2 + 1, goalStarterY2, 3, goalStarterX2 + 1, goalStarterY2, 3);
+            if (goalStarterY2 + 1 < world_doty_count)
+                forbid.forbidList(goalStarterX2, goalStarterY2 + 1, 3, goalStarterX2, goalStarterY2 + 1, 3);
+            if (goalStarterX2 - 1 >= 0)
+                forbid.forbidList(goalStarterX2 - 1, goalStarterY2, 3, goalStarterX2 - 1, goalStarterY2, 3);
+            if (goalStarterY2 - 1 >= 0)
+                forbid.forbidList(goalStarterX2, goalStarterY2 - 1, 3, goalStarterX2, goalStarterY2 - 1, 3);
+
+            if (goalStarterX2 + 1 < world_dotx_count && goalStarterY2 + 1 < world_doty_count) {
+                forbid.forbidList(goalStarterX2 + 1, goalStarterY2 + 1, 3, goalStarterX2 + 1, goalStarterY2 + 1, 3);
+
+
+            }
+
+            if (goalStarterY2 + 1 < world_doty_count && goalStarterX2 - 1 >= 0) {
+                forbid.forbidList(goalStarterX2 - 1, goalStarterY2 + 1, 3, goalStarterX2 - 1, goalStarterY2 + 1, 3);
+
+            }
+
+            if (goalStarterX2 - 1 >= 0 && goalStarterY2 - 1 >= 0) {
+                forbid.forbidList(goalStarterX2 - 1, goalStarterY2 - 1, 3, goalStarterX2 - 1, goalStarterY2 - 1, 3);
+
+            }
+
+            if (goalStarterY2 - 1 >= 0 && goalStarterX2 < world_dotx_count) {
+                forbid.forbidList(goalStarterX2 + 1, goalStarterY2 - 1, 3, goalStarterX2 + 1, goalStarterY2 - 1, 3);
+
+            }
+
+
+        }
+        if (goalGearType2 == 3) {
+            //System.ot.println("Working3");
+            forbid.forbidList(goalStarterX2, goalStarterY2, 1, goalStarterX2, goalStarterY2, 1);
+            forbid.forbidList(goalStarterX2, goalStarterY2, 2, goalStarterX2, goalStarterY2, 2);
+            forbid.forbidList(goalStarterX2, goalStarterY2, 3, goalStarterX2, goalStarterY2, 3);
+
+            if (goalStarterX2 + 1 < world_dotx_count) {
+                forbid.forbidList(goalStarterX2 + 1, goalStarterY2, 1, goalStarterX2 + 1, goalStarterY2, 1);
+                forbid.forbidList(goalStarterX2 + 1, goalStarterY2, 2, goalStarterX2 + 1, goalStarterY2, 2);
+                forbid.forbidList(goalStarterX2 + 1, goalStarterY2, 3, goalStarterX2 + 1, goalStarterY2, 3);
+
+
+            }
+
+            if (goalStarterY2 + 1 < world_doty_count) {
+                forbid.forbidList(goalStarterX2, goalStarterY2 + 1, 1, goalStarterX2, goalStarterY2 + 1, 1);
+                forbid.forbidList(goalStarterX2, goalStarterY2 + 1, 2, goalStarterX2, goalStarterY2 + 1, 2);
+                forbid.forbidList(goalStarterX2, goalStarterY2 + 1, 3, goalStarterX2, goalStarterY2 + 1, 3);
+
+            }
+
+            if (goalStarterX2 - 1 >= 0) {
+                forbid.forbidList(goalStarterX2 - 1, goalStarterY2, 1, goalStarterX2 - 1, goalStarterY2, 1);
+                forbid.forbidList(goalStarterX2 - 1, goalStarterY2, 2, goalStarterX2 - 1, goalStarterY2, 2);
+                forbid.forbidList(goalStarterX2 - 1, goalStarterY2, 3, goalStarterX2 - 1, goalStarterY2, 3);
+
+            }
+
+            if (goalStarterY2 - 1 >= 0) {
+                forbid.forbidList(goalStarterX2, goalStarterY2 - 1, 1, goalStarterX2, goalStarterY2 - 1, 1);
+                forbid.forbidList(goalStarterX2, goalStarterY2 - 1, 2, goalStarterX2, goalStarterY2 - 1, 2);
+                forbid.forbidList(goalStarterX2, goalStarterY2 - 1, 3, goalStarterX2, goalStarterY2 - 1, 3);
+
+            }
+
+
+            //LARGE CROSSES
+
+
+            if (goalStarterX2 + 1 < world_dotx_count && goalStarterY2 + 1 < world_doty_count) {
+                forbid.forbidList(goalStarterX2 + 1, goalStarterY2 + 1, 2, goalStarterX2 + 1, goalStarterY2 + 1, 2);
+                forbid.forbidList(goalStarterX2 + 1, goalStarterY2 + 1, 3, goalStarterX2 + 1, goalStarterY2 + 1, 3);
+
+
+            }
+
+            if (goalStarterY2 + 1 < world_doty_count && goalStarterX2 - 1 >= 0) {
+                forbid.forbidList(goalStarterX2 - 1, goalStarterY2 + 1, 2, goalStarterX2 - 1, goalStarterY2 + 1, 2);
+                forbid.forbidList(goalStarterX2 - 1, goalStarterY2 + 1, 3, goalStarterX2 - 1, goalStarterY2 + 1, 3);
+
+            }
+
+            if (goalStarterX2 - 1 >= 0 && goalStarterY2 - 1 >= 0) {
+                forbid.forbidList(goalStarterX2 - 1, goalStarterY2 - 1, 2, goalStarterX2 - 1, goalStarterY2 - 1, 2);
+                forbid.forbidList(goalStarterX2 - 1, goalStarterY2 - 1, 3, goalStarterX2 - 1, goalStarterY2 - 1, 3);
+
+            }
+
+            if (goalStarterY2 - 1 >= 0 && goalStarterX2 < world_dotx_count) {
+                forbid.forbidList(goalStarterX2 + 1, goalStarterY2 - 1, 2, goalStarterX2 + 1, goalStarterY2 - 1, 2);
+                forbid.forbidList(goalStarterX2 + 1, goalStarterY2 - 1, 3, goalStarterX2 + 1, goalStarterY2 - 1, 3);
+
+            }
+        }
+
+        if(goalGearType2 == 1){
+            if(goalStarterX2+1<world_dotx_count)
+                aList.allowedList(goalStarterX2+1,goalStarterY2,2,goalStarterX2+1,goalStarterY2,2);
+            if(goalStarterY2+1<world_doty_count)
+                aList.allowedList(goalStarterX2,goalStarterY2+1,2,goalStarterX2,goalStarterY2+1,2);
+            if(goalStarterX2-1>= 0)
+                aList.allowedList(goalStarterX2-1,goalStarterY2,2,goalStarterX2-1,goalStarterY2,2);
+
+            if(goalStarterY2-1>=0)
+                aList.allowedList(goalStarterX2,goalStarterY2-1,2,goalStarterX2,goalStarterY2-1,2);
+
+
+            if(goalStarterX2+1<world_dotx_count && goalStarterY2 + 1 < world_doty_count)
+                aList.allowedList(goalStarterX2+1,goalStarterY2+1,3,goalStarterX2+1,goalStarterY2+1,3);
+            if(goalStarterY2+1<world_doty_count  && goalStarterX2-1>=0)
+                aList.allowedList(goalStarterX2-1,goalStarterY2+1,3,goalStarterX2-1,goalStarterY2+1,3);
+            if(goalStarterX2-1>= 0 && goalStarterY2-1>=0)
+                aList.allowedList(goalStarterX2-1,goalStarterY2-1,3,goalStarterX2-1,goalStarterY2-1,3);
+
+            if(goalStarterY2-1>=0 && goalStarterX2+1<world_dotx_count)
+                aList.allowedList(goalStarterX2+1,goalStarterY2-1,3,goalStarterX2+1,goalStarterY2-1,3);
+
+
+        }
+
+        if(goalGearType2 == 2){
+
+            if(goalStarterX2+1<world_dotx_count)
+                aList.allowedList(goalStarterX2+1,goalStarterY2,1,goalStarterX2+1,goalStarterY2,1);
+            if(goalStarterY2+1<world_doty_count)
+                aList.allowedList(goalStarterX2,goalStarterY2+1,1,goalStarterX2,goalStarterY2+1,1);
+            if(goalStarterX2-1>= 0)
+                aList.allowedList(goalStarterX2-1,goalStarterY2,1,goalStarterX2-1,goalStarterY2,1);
+
+            if(goalStarterY2-1>=0)
+                aList.allowedList(goalStarterX2,goalStarterY2-1,1,goalStarterX2,goalStarterY2-1,1);
+
+
+            if(goalStarterX2+1<world_dotx_count && goalStarterY2 + 1 < world_doty_count)
+                aList.allowedList(goalStarterX2+1,goalStarterY2+1,2,goalStarterX2+1,goalStarterY2+1,2);
+            if(goalStarterY2+1<world_doty_count  && goalStarterX2-1>=0)
+                aList.allowedList(goalStarterX2-1,goalStarterY2+1,2,goalStarterX2-1,goalStarterY2+1,2);
+            if(goalStarterX2-1>= 0 && goalStarterY2-1>=0)
+                aList.allowedList(goalStarterX2-1,goalStarterY2-1,2,goalStarterX2-1,goalStarterY2-1,2);
+
+            if(goalStarterY2-1>=0 && goalStarterX2+1<world_dotx_count)
+                aList.allowedList(goalStarterX2+1,goalStarterY2-1,2,goalStarterX2+1,goalStarterY2-1,2);
+
+
+
+        }
+
+        if(goalGearType2 == 3){
+            if(goalStarterX2+1<world_dotx_count && goalStarterY2 + 1 < world_doty_count)
+                aList.allowedList(goalStarterX2+1,goalStarterY2+1,1,goalStarterX2+1,goalStarterY2+1,1);
+            if(goalStarterY2+1<world_doty_count  && goalStarterX2-1>=0)
+                aList.allowedList(goalStarterX2-1,goalStarterY2+1,1,goalStarterX2-1,goalStarterY2+1,1);
+            if(goalStarterX2-1>= 0 && goalStarterY2-1>=0)
+                aList.allowedList(goalStarterX2-1,goalStarterY2-1,1,goalStarterX2-1,goalStarterY2-1,1);
+
+            if(goalStarterY2-1>=0 && goalStarterX2+1<world_dotx_count)
+                aList.allowedList(goalStarterX2+1,goalStarterY2-1,1,goalStarterX2+1,goalStarterY2-1,1);
+
+
+
+
+
+            if(goalStarterX2+2<world_dotx_count)
+                aList.allowedList(goalStarterX2+2,goalStarterY2,3,goalStarterX2+2,goalStarterY2,3);
+            if(goalStarterX2-2>=0)
+                aList.allowedList(goalStarterX2-2,goalStarterY2,3,goalStarterX2-2,goalStarterY2,3);
+            if(goalStarterY2-2>=0)
+                aList.allowedList(goalStarterX2,goalStarterY2-2,3,goalStarterX2,goalStarterY2-2,3);
+
+            if(goalStarterY2+2<world_doty_count)
+                aList.allowedList(goalStarterX2,goalStarterY2+2,3,goalStarterX2,goalStarterY2+2,3);
+
+
+        }
 
 
 
@@ -1163,6 +1436,12 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
     @Override
     public void render(float delta) {
+
+        rec1.setSize(creatureSprite.getWidth(),creatureSprite.getHeight());
+        rec2.setSize(creatureSprite2.getWidth(),creatureSprite2.getHeight());
+
+        rec1.setPosition(creatureSprite.getX(),creatureSprite.getY());
+        rec2.setPosition(creatureSprite2.getX(),creatureSprite2.getY());
 
         switch (state) {
             case RUN: {
@@ -1828,8 +2107,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
                     }
 
 
-                    creatureSprite.draw(game.batch);
-                    creatureSprite2.draw(game.batch);
+
 
                     creatureSprite2.setPosition(a2 - creatureSprite2.getWidth() / 2, b2);
                     creatureSprite.setPosition(a - creatureSprite.getWidth() / 2, b);
@@ -1850,9 +2128,11 @@ public class Level5 extends ApplicationAdapter implements Screen {
                     }
 
 
-                    if (Math.abs(spriteContainer[goalStarterX][goalStarterY].getRotation()) > 5) {
+                    if (Math.abs(spriteContainer[goalStarterX][goalStarterY].getRotation()) > 5 && Math.abs(spriteContainer[goalStarterX2][goalStarterY2].getRotation()) > 5) {
 
                         winCondition = true;
+                        prefs.putBoolean(getClass().getName(),false);
+                        prefs.flush();
                     }
 
                     //System.out.println(spriteContainer[starterX][starterY].getRotation());
@@ -1901,6 +2181,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
 
+
                         if(prefs.getInteger("passedlevel",1)<nextLevel) {
                             prefs.putInteger("passedlevel", nextLevel);
                             prefs.flush();
@@ -1915,11 +2196,12 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
                             controller.whiteBox.setColor(0, 0, 0, 0);
+                            controller.timer.setColor(0,0,0,0);
                         }
 
                         WINTIMER = WINTIMER - Gdx.graphics.getDeltaTime();
                         controller.game.font.draw(game.batch, "WAIT FOR:  " + WINTIMER, 0, 0);
-                        if (goldBool && prefs.getBoolean("Level5", true)) {
+                        if (isLevelPassed && goldBool) {
                             for (int winX = 0; winX < world_dotx_count; winX++) {
                                 for (int winY = 0; winY < world_doty_count; winY++) {
                                     if (spriteContainer[winX][winY] != null) {
@@ -1953,7 +2235,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
                             VariableCalls.timeLeft = 100f;
 
 
-                            if(crateHad && prefs.getBoolean("Level5",true)) {
+                            if(isLevelPassed & crateHad) {
 
                                 prefs.putInteger("chest", prefs.getInteger("chest", 0) + 1);
                                 prefs.flush();
@@ -1962,9 +2244,8 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
 
-                            prefs.putBoolean("Level5", false);
 
-                            prefs.flush();
+
                             if(VariableCalls.gameEnd)
                                 VariableCalls.fadeOut += delta * 100;
 
@@ -2030,13 +2311,13 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
                     // controller.game.font.dispose();
-                    if (crateGot && prefs.getBoolean("Level5", true)) {
+                    if (crateGot && isLevelPassed) {
                         if (crateBoolean) {
                             crateTimer -= delta;
 
                             int xE = 0;
-                            for (int jCh = 0; jCh < VariableCalls.world_dotx_count; jCh++) {
-                                for (int kCh = 0; kCh < VariableCalls.world_doty_count; kCh++) {
+                            for (int jCh = 0; jCh <world_dotx_count; jCh++) {
+                                for (int kCh = 0; kCh < world_doty_count; kCh++) {
                                     for (int lCh = 0; lCh < 4; lCh++) {
                                         if (aList.allowedList[jCh][kCh][lCh] != null) {
 
@@ -2212,7 +2493,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
                 if (!controller.loseCond)
-                    controller.whiteBox.setSize((1 / VariableCalls.timeDivider) * VariableCalls.timeLeft * 100, 10);
+                    controller.     whiteBox.setSize(VariableCalls.timeLeft/2, 11 );
                 if (VariableCalls.timeLeft < 0) {
 
                     controller.loseCond = true;
@@ -2447,19 +2728,23 @@ public class Level5 extends ApplicationAdapter implements Screen {
             if (isItJumping) {
 
 
+                creatureSprite.setOrigin(center);
+
                 jumpFreq = jumpFreq - Delta;
                 if (jumpFreq < 0) {
                     jumpTime--;
+                    creatureSprite.setRotation(0);
                     if (isItInTheAir) {
 
-                        creatureSprite.setColor(Color.RED);
+
+                        creatureSprite.setRotation(creatureSprite.getRotation()-20f);
                         isItInTheAir = false;
                         jumpFreq = 1;
 
 
                     } else {
                         creatureSprite.setColor(Color.WHITE);
-
+                        creatureSprite.setRotation(creatureSprite.getRotation()+20f);
                         isItInTheAir = true;
                         jumpFreq = 1;
 
@@ -2479,12 +2764,13 @@ public class Level5 extends ApplicationAdapter implements Screen {
                 if (brokenHingeContainer[crX][crY].x != 1000 &&
                         brokenHingeContainer[crX][crY].y != 1000) {
                     jumpTime++;
+                    creatureSprite.setRotation(0);
                 }
 
                 else{
                     jumpTime = 8;
                     isItJumping = false;
-
+                    creatureSprite.setRotation(0);
 
                     breakBlockTimer = 4;
 
@@ -2515,13 +2801,13 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
             if (spawnTimer < 0) {
 
-                creatureSprite.setAlpha(0);
+                creatureSprite.setColor(0,0,0,0);
                 b = 1000;
                 creatureSprite.setPosition(a - creatureSprite.getWidth() / 2, b);
                 creatureSprite.setColor(Color.WHITE);
 
 
-                creatureSprite.setAlpha(1);
+                creatureSprite.setColor(1,1,1,1);
 
                 //System.out.println("spawnTimer  ="  + spawnTimer);
                 int locationx = 2;
@@ -2675,18 +2961,20 @@ public class Level5 extends ApplicationAdapter implements Screen {
             //System.out.println(jumpFreq);
             if(isItJumping2){
 
+                creatureSprite2.setOrigin(center);
 
                 jumpFreq2 = jumpFreq2-Delta;
                 if (jumpFreq2<0) {
                     jumpTime2--;
+                    creatureSprite2.setRotation(0);
                     if(isItInTheAir2) {
 
-                        creatureSprite2.setColor(Color.RED);
+                        creatureSprite2.setRotation(creatureSprite.getRotation()-20f);
                         isItInTheAir2 = false;
                         jumpFreq2 = 1;
 
                     }
-                    else{creatureSprite2.setColor(Color.WHITE);
+                    else{ creatureSprite2.setRotation(creatureSprite.getRotation()+20f);
 
                         isItInTheAir2 = true;
                         jumpFreq2 = 1;
@@ -2710,6 +2998,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
                 if (brokenHingeContainer[crX2][crY2].x != 1000 &&
                         brokenHingeContainer[crX2][crY2].y != 1000) {
                     jumpTime++;
+                    creatureSprite2.setRotation(0);
                 }
 
 
@@ -2717,6 +3006,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
                     jumpTime2 = 9;
                     isItJumping2 = false;
 
+                    creatureSprite.setRotation(0);
 
                     breakBlockTimer2 = 6;
 
@@ -2747,14 +3037,13 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
             if (spawnTimer2 < 0) {
 
-                creatureSprite2.setAlpha(0);
+                creatureSprite2.setColor(0,0,0,0);
                 b2 = 1000;
                 creatureSprite2.setPosition(a2 - creatureSprite2.getWidth() / 2, b2);
 
-                creatureSprite2.setColor(Color.WHITE);
 
 
-                creatureSprite2.setAlpha(1);
+                creatureSprite2.setColor(1,1,1,1);
 
                 //System.out.println("spawnTimer  ="  + spawnTimer);
                 int locationx = 1;
@@ -2861,9 +3150,12 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
         if (controller.isUiElementsPressed()) {
             chosenState = 2;
-            controller.bombImg.setColor(Color.YELLOW);
-            controller.gearImg.setColor(1, 1, 1, 1);
+            controller.gearImg.setColor(1,1,1,1);
+
             controller.blowtorchImg.setColor(1,1,1,1);
+
+            controller.bombImg.setColor(Color.YELLOW);
+
             controller.crossHair.setColor(1,1,1,1);
 
 
@@ -2875,10 +3167,15 @@ public class Level5 extends ApplicationAdapter implements Screen {
         if(controller.isBlowtorchPressed()){
 
             chosenState= 3;
-            controller.blowtorchImg.setColor(Color.YELLOW);
+
             controller.gearImg.setColor(1,1,1,1);
-            controller.bombImg.setColor(1, 1, 1, 1);
+
+            controller.blowtorchImg.setColor(Color.YELLOW);
+
+            controller.bombImg.setColor(1,1,1,1);
+
             controller.crossHair.setColor(1,1,1,1);
+
 
 
             badsprite = new Sprite(blowtorcht);
@@ -2892,9 +3189,13 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
             chosenState = 1;
             controller.gearImg.setColor(Color.YELLOW);
-            controller.bombImg.setColor(1, 1, 1, 1);
+
             controller.blowtorchImg.setColor(1,1,1,1);
+
+            controller.bombImg.setColor(1,1,1,1);
+
             controller.crossHair.setColor(1,1,1,1);
+
 
 
 
@@ -2919,10 +3220,14 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
         if (controller.isCrosshairPressed()) {
             chosenState = 4;
-            controller.crossHair.setColor(Color.YELLOW);
+
             controller.gearImg.setColor(1, 1, 1, 1);
+
             controller.blowtorchImg.setColor(1,1,1,1);
+
             controller.bombImg.setColor(1,1,1,1);
+
+            controller.crossHair.setColor(Color.YELLOW);
 
             badsprite = new Sprite(crossHair);
 
@@ -3228,14 +3533,65 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
                             if (rand == 1) {
                                 sprite = new Sprite(kucuk1);
+                                Random intRandom = new Random();
+                                int colorCode = intRandom.nextInt(5);
+                                if(colorCode == 0){
+                                    sprite.setColor(205f/255f,0,120f/255f,1);
+                                }
+                                else if(colorCode == 1){
+                                    sprite.setColor(5f/255f,255/255f,251f/255f,1);
+                                }
+                                else if(colorCode == 2){
+                                    sprite.setColor(5f/255f,255/255f,38f/255f,1);
+                                }
+                                else if(colorCode == 3){
+                                    sprite.setColor(255/255f,158/255f,84f/255f,1);
+                                }
+                                else{
+                                    sprite.setColor(255f/255f,128/255f,85f/255f,1);
+                                }
                                 sprite.setSize(5.5f, 5.5f);
                             }
                             if (rand == 2) {
                                 sprite = new Sprite(orta1);
+                                Random intRandom = new Random();
+                                int colorCode = intRandom.nextInt(5);
+                                if(colorCode == 0){
+                                    sprite.setColor(205f/255f,0,120f/255f,1);
+                                }
+                                else if(colorCode == 1){
+                                    sprite.setColor(5f/255f,255/255f,251f/255f,1);
+                                }
+                                else if(colorCode == 2){
+                                    sprite.setColor(5f/255f,255/255f,38f/255f,1);
+                                }
+                                else if(colorCode == 3){
+                                    sprite.setColor(255/255f,158/255f,84f/255f,1);
+                                }
+                                else{
+                                    sprite.setColor(255f/255f,128/255f,85f/255f,1);
+                                }
                                 sprite.setSize(10.8f, 10.8f);
                             }
                             if (rand == 3) {
                                 sprite = new Sprite(buyuk1);
+                                Random intRandom = new Random();
+                                int colorCode = intRandom.nextInt(5);
+                                if(colorCode == 0){
+                                    sprite.setColor(205f/255f,0,120f/255f,1);
+                                }
+                                else if(colorCode == 1){
+                                    sprite.setColor(5f/255f,255/255f,251f/255f,1);
+                                }
+                                else if(colorCode == 2){
+                                    sprite.setColor(5f/255f,255/255f,38f/255f,1);
+                                }
+                                else if(colorCode == 3){
+                                    sprite.setColor(255/255f,158/255f,84f/255f,1);
+                                }
+                                else{
+                                    sprite.setColor(255f/255f,128/255f,85f/255f,1);
+                                }
                                 sprite.setSize(16f, 16f);
                             }
 
@@ -3263,7 +3619,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
 
 
-                            if (creatureSprite.getBoundingRectangle().overlaps(spriteContainer[moveX][moveY].getBoundingRectangle())) {
+                            if (rec1.overlaps(spriteContainer[moveX][moveY].getBoundingRectangle())) {
 
 
                                 isItJumping = false;
@@ -3282,7 +3638,7 @@ public class Level5 extends ApplicationAdapter implements Screen {
 
                             }
 
-                            if (creatureSprite2.getBoundingRectangle().overlaps(spriteContainer[moveX][moveY].getBoundingRectangle())) {
+                            if (rec2.overlaps(spriteContainer[moveX][moveY].getBoundingRectangle())) {
                                 isItJumping2 = false;
                                 isItInTheAir2 = false;
                                 creatureSpawnBoolean2 = true;
@@ -3308,17 +3664,17 @@ public class Level5 extends ApplicationAdapter implements Screen {
                             if (VariableCalls.prevRand == 1) {
                                 nextGear = new Image(kucuk1);
 
-                                nextGear.setSize(5.5f, 5.5f);
+                                nextGear.setSize(5.5f*2f, 5.5f*2f);
                             }
                             if (VariableCalls.prevRand == 2) {
                                 nextGear = new Image(orta1);
 
-                                nextGear.setSize(10.8f, 10.8f);
+                                nextGear.setSize(10.8f*2, 10.8f*2);
                             }
                             if (VariableCalls.prevRand == 3) {
                                 nextGear = new Image(buyuk1);
 
-                                nextGear.setSize(16f, 16f);
+                                nextGear.setSize(16f*2, 16f*2);
                             }
 
                             nextGear.setPosition(15 - nextGear.getWidth() / 2, VariableCalls.WORLD_HEIGHT - 15 - nextGear.getHeight() / 2);

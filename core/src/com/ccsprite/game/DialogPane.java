@@ -48,8 +48,8 @@ public class DialogPane extends Actor {
     Skin smallSkin;
 
 
-    TextureRegion dark,star,button,timer,whiteBox,one,crossHair,crate,openChest, explosion,youLose,kucuk,orta,buyuk,bomb,kucuk1,orta1,buyuk1,backGroundt,hingeTex,youwinT,blowtorcht,creatureTexture
-            ;
+
+    Texture backGroundt;
     TextureRegion uiSkin;
 
     private TextureAtlas texAtlas;
@@ -62,7 +62,7 @@ public class DialogPane extends Actor {
 
         texAtlas = new TextureAtlas("texPacked/texPacked.atlas");
 
-        backGroundt = texAtlas.findRegion("background");
+        backGroundt = new Texture("dialogbg.png");
 
 
 
@@ -84,14 +84,14 @@ public class DialogPane extends Actor {
 
 
 
-        skin.getFont("default-font").getData().setScale(0.2f);
+        skin.getFont("default-font").getData().setScale(0.1f);
 
 
 
         smallSkin = new Skin(Gdx.files.internal("uiskin.json"), new TextureAtlas("uiskin.atlas"));
 
 
-        smallSkin.getFont("default-font").getData().setScale(0.1f);
+        smallSkin.getFont("default-font").getData().setScale(0.05f);
 
 
 
@@ -234,9 +234,9 @@ public class DialogPane extends Actor {
 
         });
 
-        myTex = backGroundt;
 
-        drawable = new TextureRegionDrawable(myTex);
+
+        drawable = new TextureRegionDrawable(backGroundt);
         dialog.setBackground(drawable);
 
         float btnSize = 10f;

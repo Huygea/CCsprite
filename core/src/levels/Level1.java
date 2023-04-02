@@ -10,7 +10,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -38,29 +39,41 @@ import com.ccsprite.game.ClickClack;
 import com.ccsprite.game.Controller;
 import com.ccsprite.game.EnumClass;
 import com.ccsprite.game.LevelSelection;
+import com.ccsprite.game.LevelVariables;
 import com.ccsprite.game.PauseStage;
 import com.ccsprite.game.Randomizer;
 import com.ccsprite.game.VariableCalls;
 import com.ccsprite.game.allowedList;
 import com.ccsprite.game.forbiddenList;
 
+import java.util.ArrayList;
+import java.util.Random;
 
-
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+import static com.badlogic.gdx.utils.Align.center;
 import static com.ccsprite.game.EnumClass.state;
 import static com.ccsprite.game.MyActorKucuk.nextGear;
 import static com.ccsprite.game.VariableCalls.WORLD_WIDTH;
-import java.util.Random;
+
 
 public class Level1 extends ApplicationAdapter implements Screen {
 
 
-    //WORLD DOT SIZES
 
 
+
+
+
+
+   //LEVEL NUMBER
     int levelNumber = 1;
-    int difficultyLevel = 1;
+
+    int difficultyLevel = 2;
     private boolean crateGot = true;
 
+
+    private int nextLevel = levelNumber +1;
 
 
 
@@ -81,26 +94,39 @@ public class Level1 extends ApplicationAdapter implements Screen {
     private boolean crateBoolean;
     //CREATURE 1 VARIABLES
     private  float jumpDelay = 3;
-    private Sprite creatureSprite;
-    private  boolean jump = false;
+    private Image creatureSprite;
+    private  boolean jump = true;
     private Sprite hingeSprite;
     private Sprite [][] hingeArray;
     private boolean jumpDelayBoolean = true;
     private boolean explosionBool = false;
     private Sprite chestSprite;
+    private Rectangle rec1,rec2;
     Label threetwoone;
 
 
-    private TextureRegion dark,star,button,timer,whiteBox,one,crossHair,crate,openChest, explosion,youLose,kucuk,orta,buyuk,bomb,kucuk1,orta1,buyuk1,backGroundt,hingeTex,youwinT,blowtorcht,creatureTexture
-            ;
+    TextureRegion dark;
+    TextureRegion star;
+    TextureRegion button;
+    TextureRegion timer;
+    TextureRegion whiteBox;
+    TextureRegion one;
+    TextureRegion crossHair;
+    TextureRegion crate;
+    TextureRegion openChest;
+    TextureRegion explosion;
+    Texture youLose;
+    TextureRegion bomb;
+    Texture hingeTex;
+    Texture youwinT;
+    TextureRegion blowtorcht;
+
+    private Texture kucuk, buyuk, orta, kucuk1, orta1, buyuk1, backGroundt;
+
     TextureRegion uiSkin;
 
     Texture explosions;
     Texture bulletHitTex;
-
-
-    private TextureAtlas texAtlas;
-
 
     Skin skin;
     Skin smallSkin;
@@ -110,9 +136,10 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
     TextureRegion[] animationFrames;
     Animation<TextureRegion> animation;
+    private TextureAtlas texAtlas;
+
 
     private boolean crateHad=false;
-    private int nextLevel = levelNumber +1;
     private boolean bullethit = false;
     private float crateDecay;
     private Vector2 [][] brokenHingeContainer;
@@ -133,8 +160,8 @@ public class Level1 extends ApplicationAdapter implements Screen {
     private float checkTimer2= 0.2f;
 
     private float crateTimer;
-    private Sprite creatureSprite2;
-    private  boolean jump2 = false;
+    private Image creatureSprite2;
+    private  boolean jump2 = true;
     private boolean jumpDelayBoolean2 = true;
     private Sprite [][] shadowSprite;
 
@@ -161,7 +188,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
 
-    Vector2 lastTouchedPos;
+
 
 
 
@@ -191,6 +218,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
     private Vector3 cameraPos;
 
     private Sprite sprite;
+    private Sprite sprite2;
     private Vector3 [][][] spriteArray;
     private  Vector2 [][] isItRotating;
     private  Sprite [][] spriteContainer;
@@ -213,26 +241,23 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
 
-
-    static int goalStarterX;
-    static int goalStarterY ;
+    public ArrayList<Vector3> goalStarter;
 
 
-    Texture trollidle;
 
-    int firstTrollState = 1;
 
-    Animation<TextureRegion> idleAnim;
-    TextureRegion [] framesIdle;
-    float elapsedTimeIdle = 0;
 
+
+
+
+    public Texture creatureTexture1, creatureTexture2;
 
 
     static int starterX =0;
     static int starterY =0;
 
     int starterGearType = 1;
-    int goalGearType = 1;
+
 
     private boolean [][] isThisRolling;
 
@@ -240,6 +265,8 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
     allowedList aList;
 
+    Vector2 lastTouchedPos;
+    public boolean isLevelPassed;
 
 
     Randomizer randomizer;
@@ -248,6 +275,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
     Preferences prefs;
 
     InputMultiplexer im;
+    LevelVariables lvlVar;
 
     public Level1(final ClickClack game) {
         this.game = game;
@@ -258,127 +286,120 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
 
-        public void init(final ClickClack game){
+    ArrayList <Integer> lvlArray = new ArrayList();
+
+    public void init(final ClickClack game){
         VariableCalls.confirmBoolean = false;
 
-            VariableCalls.levelNum = levelNumber;
+        lvlVar = new LevelVariables();
+
+        lvlArray = lvlVar.levelVarible(levelNumber);
+
+
+
         VariableCalls.gameStart = true;
-            fadeIn = 300;
-            commenceCounter = 400;
+        fadeIn = 300;
+        commenceCounter = 400;
 
 
-            //TEXTURES
+        //TEXTURES
 
 
-            texAtlas = new TextureAtlas("texPacked/texPacked.atlas");
-            kucuk = texAtlas.findRegion("kucuktamam");
-            orta = texAtlas.findRegion("ortatamam");
-            buyuk = texAtlas.findRegion("BuyukDisliTamamdir");
-            bomb = texAtlas.findRegion("bomb");
-            kucuk1 = texAtlas.findRegion("kucuksteampunk");
-            orta1 = texAtlas.findRegion("ortasteampunk");
-            buyuk1 = texAtlas.findRegion("buyuksteampunk");
-            backGroundt = texAtlas.findRegion("background");
-            hingeTex = texAtlas.findRegion("hinge");
-            youwinT = texAtlas.findRegion("youwin");
-            blowtorcht = texAtlas.findRegion("blowtorch");
-            creatureTexture = texAtlas.findRegion("cyclops");
-            youLose = texAtlas.findRegion("youLose");
-            explosion = texAtlas.findRegion("explosion");
-            one = texAtlas.findRegion("one");
-            whiteBox = texAtlas.findRegion("timerWhiteBox");
-            timer = texAtlas.findRegion("timer");
-            button = texAtlas.findRegion("button");
-            dark = texAtlas.findRegion("dark");
+        goalStarter = new ArrayList<>();
+        texAtlas = new TextureAtlas("texPacked/texPacked.atlas");
+        kucuk = new Texture("small.png");
+        orta = new Texture("medium.png");
+        buyuk = new Texture("large.png");
+       // bomb = texAtlas.findRegion("bomb");
+        bomb = new Sprite(new Texture("bomb.png"));
+        kucuk1 = new Texture("smallpin.png");
+        orta1 = new Texture("mediumpin.png");
+        buyuk1 = new Texture("largepin.png");
+        backGroundt = new Texture("bg.png");
+        hingeTex = new Texture("hinge.png");
+        youwinT = new Texture("youwin.png");
+        blowtorcht = new Sprite(new Texture("oil.png"));
+        creatureTexture1 = new Texture("creature1.png");
+        creatureTexture2 = new Texture("creature2.png");
+        youLose = new Texture("youlose.png");
+        explosion = texAtlas.findRegion("explosion");
+        one = texAtlas.findRegion("one");
+        whiteBox = texAtlas.findRegion("timerWhiteBox");
+        timer = texAtlas.findRegion("timer");
+        button = texAtlas.findRegion("button");
+        dark = texAtlas.findRegion("dark");
 
 
-            star = texAtlas.findRegion("star");
+        star = texAtlas.findRegion("star");
 
-            openChest = texAtlas.findRegion("openCrate");
-
-
-
-
-            uiSkin = texAtlas.findRegion("uiskin");
-
+        openChest = texAtlas.findRegion("openCrate");
 
 
 
 
-
-            crate = texAtlas.findRegion("crate");
-
+        uiSkin = texAtlas.findRegion("uiskin");
 
 
-            crossHair = texAtlas.findRegion("crosshair");
+
+
+
+
+        crate = texAtlas.findRegion("crate");
+
+
+
+        crossHair = new Sprite(new Texture("sniper.png"));
 
 
 
 //SKIN AND ANIMATIONS
 
-
-            //Troll Animations
-
-
-            trollidle = new Texture("trollidle.png");
-            framesIdle = new TextureRegion[7];
-            TextureRegion[][]tempframes = TextureRegion.split(trollidle,200,138);
-            int indexa = 0;
-            for(int j = 0; j<7;j++){
-
-                framesIdle[indexa++] = tempframes[0][j];
-            }
-
-            idleAnim = new Animation<TextureRegion>(1f/7f,framesIdle);
-
-
-            //
-
-            skin = new Skin(Gdx.files.internal("uiskin.json"), new TextureAtlas("uiskin.atlas"));
+        skin = new Skin(Gdx.files.internal("uiskin.json"), new TextureAtlas("uiskin.atlas"));
 
 
 
-            skin.getFont("default-font").getData().setScale(0.2f);
+        skin.getFont("default-font").getData().setScale(0.1f);
 
 
 
-            smallSkin = new Skin(Gdx.files.internal("uiskin.json"), new TextureAtlas("uiskin.atlas"));
+        smallSkin = new Skin(Gdx.files.internal("uiskin.json"), new TextureAtlas("uiskin.atlas"));
 
 
 
-            smallSkin.getFont("default-font").getData().setScale(0.1f);
-            explosions  =new Texture("explosion.png");
+        smallSkin.getFont("default-font").getData().setScale(0.05f);
+        explosions  =new Texture("explosion.png");
 
-            bulletHitTex = new Texture("fireBullet.png");
+        bulletHitTex = new Texture("fireBullet.png");
 
+        rec1 = new Rectangle();
+        rec2 = new Rectangle();
 
+        bulletFrames = new TextureRegion[4];
+        TextureRegion [][] tempBulletFrames = TextureRegion.split(bulletHitTex,25,25);
 
-            bulletFrames = new TextureRegion[4];
-            TextureRegion [][] tempBulletFrames = TextureRegion.split(bulletHitTex,25,25);
+        int indexb = 0;
 
-            int indexb = 0;
+        for(int j = 0; j<4; j++){
 
-            for(int j = 0; j<4; j++){
-
-                bulletFrames[indexb++] = tempBulletFrames[0][j];
-            }
-
-
-            bulletHit = new Animation<TextureRegion>(1f/4f, bulletFrames);
-
-            animationFrames = new TextureRegion[10];
-            TextureRegion [][] tempFrames = TextureRegion.split(explosions,10,10);
+            bulletFrames[indexb++] = tempBulletFrames[0][j];
+        }
 
 
-            int index = 0;
+        bulletHit = new Animation<TextureRegion>(1f/4f, bulletFrames);
 
-            for(int i = 0; i<10;i++){
+        animationFrames = new TextureRegion[10];
+        TextureRegion [][] tempFrames = TextureRegion.split(explosions,10,10);
 
 
-                animationFrames[index++] = tempFrames[0][i];
-            }
+        int index = 0;
 
-            animation = new Animation<TextureRegion>(1f/10f, animationFrames);
+        for(int i = 0; i<10;i++){
+
+
+            animationFrames[index++] = tempFrames[0][i];
+        }
+
+        animation = new Animation<TextureRegion>(1f/10f, animationFrames);
 
 
 
@@ -397,7 +418,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
 
-            prefs = Gdx.app.getPreferences("My Preferences");
+        prefs = Gdx.app.getPreferences("My Preferences");
         VariableCalls vd = new VariableCalls();
         EnumClass.state = EnumClass.State.RUN;
         threetwoone = new Label("", skin);
@@ -409,11 +430,20 @@ public class Level1 extends ApplicationAdapter implements Screen {
         bombAmount = prefs.getInteger("bomb",5);
         oilAmount = prefs.getInteger("oil",5);
         bulletAmount = prefs.getInteger("bullet",5);
+        isLevelPassed = prefs.getBoolean(getClass().getName(),true);
         prefs.flush();
-        world_dotx_count =(int) vd.callSetter(levelNumber).x;
-        world_doty_count =(int) vd.callSetter(levelNumber).y;
-        goalStarterX = world_dotx_count-1 ;
-        goalStarterY = world_doty_count-1;
+
+        //WORLD DOTS
+        world_dotx_count = lvlVar.varList.get(3);
+        world_doty_count = lvlVar.varList.get(4);
+
+
+
+
+        //GOAL GEAR SETUP
+
+
+        goalStarter = lvlVar.goalList;
 
 
 
@@ -426,14 +456,14 @@ public class Level1 extends ApplicationAdapter implements Screen {
         //levelPassSprite.setSize(1,1);
 
 
-        allowedListChest = new Vector2[(VariableCalls.world_doty_count+1 )* (VariableCalls.world_dotx_count+1) * 4];
-            rand = randomizer.randomize();
+        allowedListChest = new Vector2[(world_doty_count+1 )* (world_dotx_count+1) * 4];
+
         crateTimer = 5;
         crateDecay = 10;
         camMovementVector = new Vector2(0,0);
         lastTouchedPos = new Vector2(0,0);
         float aspectRatio = (float) (Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
-
+        rand = randomizer.randomize();
         spriteArray = new Vector3[world_dotx_count][world_doty_count][1];
         isItRotating = new Vector2[world_dotx_count][world_doty_count];
         spriteContainer = new Sprite[world_dotx_count][world_doty_count];
@@ -471,23 +501,25 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
 
+        controller = new Controller(game,levelNumber);
 
-        controller = new Controller(game);
-        pS = new PauseStage(game);
+
+        pS = new PauseStage(game,levelNumber);
 
 
         youwin = new Sprite(youwinT);
 
 
-        creatureSprite = new Sprite(creatureTexture);
-        creatureSprite.setSize(5,5);
+        creatureSprite = new Image(creatureTexture1);
+        creatureSprite.setSize(2.1f,1.8f/0.293f);
         creaturePosition = new Vector2[world_dotx_count][world_doty_count];
 
-        creatureSprite2 = new Sprite(creatureTexture);
-        creatureSprite2.setSize(5,5);
+        creatureSprite2 = new Image(creatureTexture2);
+        creatureSprite2.setSize(2.1f,1.8f/0.293f);
         creaturePosition2 = new Vector2[world_dotx_count][world_doty_count];
 
         blowtorch = new Sprite(blowtorcht);
+
 
 
         hingeSprite = new Sprite(hingeTex);
@@ -529,14 +561,15 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
         viewport = new FitViewport(WORLD_WIDTH/2 , VariableCalls.WORLD_HEIGHT/2,cam );
         stage = new Stage(viewport, game.batch);
-
-        chestSprite = new Sprite(crate);
+        stage.addActor(creatureSprite);
+        stage.addActor(creatureSprite2);
+        chestSprite = new Sprite(new Texture("chest.png"));
 
         chestSprite.setPosition(1000,1000);
         controller.gearImg.setColor(Color.YELLOW);
         backGround = new Sprite(backGroundt);
-        backGround.setSize(WORLD_WIDTH*2,VariableCalls.WORLD_HEIGHT*2);
-        backGround.setPosition(-WORLD_WIDTH/2,-VariableCalls.WORLD_HEIGHT/2);
+        backGround.setSize(WORLD_WIDTH,VariableCalls.WORLD_HEIGHT);
+        backGround.setPosition(-WORLD_WIDTH/4,-VariableCalls.WORLD_HEIGHT/4);
 
         a = creaturePosition[crX][crY].x;
         b = creaturePosition[crX][crY].y;
@@ -554,7 +587,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
         Gdx.input.setInputProcessor(im);
 //CONTROLS ARE HERE
 
-        for(int chestX = 0; chestX<(VariableCalls.world_dotx_count+1) * (VariableCalls.world_doty_count+1); chestX++){
+        for(int chestX = 0; chestX<world_dotx_count+1 * world_doty_count+1; chestX++){
 
 
             allowedListChest[chestX]=new Vector2(0,0);
@@ -566,6 +599,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
         crateBoolean = true;
 
+        //ThumbDown and Drag Controls
         stage.addListener(new InputListener() {
 
 
@@ -607,67 +641,64 @@ public class Level1 extends ApplicationAdapter implements Screen {
         if (VariableCalls.prevRand == 1) {
             nextGear = new Image(kucuk1);
 
-            nextGear.setSize(5.5f, 5.5f);
+            nextGear.setSize(5.5f*2, 5.5f*2);
         }
         if (VariableCalls.prevRand == 2) {
             nextGear = new Image(orta1);
 
-            nextGear.setSize(10.8f, 10.8f);
+            nextGear.setSize(10.8f*2, 10.8f*2);
         }
         if (VariableCalls.prevRand == 3) {
             nextGear = new Image(buyuk1);
 
-            nextGear.setSize(16f, 16f);
+            nextGear.setSize(16f*2, 16f*2);
         }
 
         nextGear.setPosition(15 - nextGear.getWidth()/2, VariableCalls.WORLD_HEIGHT-15 - nextGear.getHeight()/2);
 
 
-            isItJumping = false;
-            creatureSpawnBoolean = true;
-            breakBlockTimer = 4;
-            jumpDelayBoolean = false;
+        isItJumping = false;
+        creatureSpawnBoolean = true;
+        breakBlockTimer = 4;
+        jumpDelayBoolean = false;
 
-            jumpDelay = 3;
-            isItInTheAir = false;
-
-
-            jumpTime = 8;
-
-            jump = true;
-
-            isItJumping2 = false;
-            isItInTheAir2 = false;
-            creatureSpawnBoolean2 = true;
-
-            jumpDelayBoolean2 = false;
-            jumpDelay2 = 4;
-
-            jumpTime2 = 8;
-            jump2 = true;
+        jumpDelay = 3;
+        isItInTheAir = false;
 
 
-            breakBlockTimer2 = 6;
+        jumpTime = 8;
 
-            levelPassSprite.setSize(fadeIn,fadeIn);
-             cam.position.set(pointCoordinates[(int)world_dotx_count/2][(int)(world_doty_count/2)],0);
-           // levelPassSprite.setOrigin(levelPassSprite.getWidth()/2,levelPassSprite.getHeight()/2);
-            levelPassSprite.setRotation(0);
-            threetwoone.setPosition(cam.position.x - threetwoone.getWidth()/2, cam.position.y - threetwoone.getHeight()/2);
+        jump = true;
 
-            levelPassSprite.setPosition(cam.position.x - levelPassSprite.getWidth()/2, cam.position.y - levelPassSprite.getHeight()/2);
+        isItJumping2 = false;
+        isItInTheAir2 = false;
+        creatureSpawnBoolean2 = true;
+
+        jumpDelayBoolean2 = false;
+        jumpDelay2 = 4;
+
+        jumpTime2 = 8;
+        jump2 = true;
 
 
-        }
+        breakBlockTimer2 = 6;
+
+        levelPassSprite.setSize(fadeIn,fadeIn);
+        cam.position.set(pointCoordinates[(int)world_dotx_count/2][(int)(world_doty_count/2)],0);
+        // levelPassSprite.setOrigin(levelPassSprite.getWidth()/2,levelPassSprite.getHeight()/2);
+        levelPassSprite.setRotation(0);
+        threetwoone.setPosition(cam.position.x - threetwoone.getWidth()/2, cam.position.y - threetwoone.getHeight()/2);
+
+        levelPassSprite.setPosition(cam.position.x - levelPassSprite.getWidth()/2, cam.position.y - levelPassSprite.getHeight()/2);
+
+
+    }
 
 
 
     private  void worldGen(int xDotNumber, int yDotNumber, float lengthBetween) {
 
         pointCoordinates = new Vector2[xDotNumber][yDotNumber];
-
-
-
 
 
         for (float xEx = 0; xEx < xDotNumber; xEx++) {
@@ -677,17 +708,17 @@ public class Level1 extends ApplicationAdapter implements Screen {
                 creaturePosition[(int) xEx][(int) yEx] = new Vector2(xEx * lengthBetween, yEx * lengthBetween);
                 creaturePosition2[(int) xEx][(int) yEx] = new Vector2(xEx * lengthBetween, yEx * lengthBetween);
                 hingeArray[(int) xEx][(int) yEx] = hingeSprite;
-                spriteArray[(int) xEx][(int) yEx][0] = new Vector3(0,0,0);
-                isItRotating[(int) xEx][(int) yEx] = new Vector2(0,0.5f);
-                brokenHingeContainer[(int) xEx][(int) yEx] = new Vector2(1000,1000);
+                spriteArray[(int) xEx][(int) yEx][0] = new Vector3(0, 0, 0);
+                isItRotating[(int) xEx][(int) yEx] = new Vector2(0, 0.5f);
+                brokenHingeContainer[(int) xEx][(int) yEx] = new Vector2(1000, 1000);
                 isThisRolling[(int) xEx][(int) yEx] = true;
-                for(int sx = 0 ; sx<24;sx++){
-                    stuckCheckList[(int) xEx][(int) yEx][sx] = new Vector3(0,0,0);
-                    stuckArray[(int) xEx][(int) yEx][sx] = new Vector3(0,0,0);
+                for (int sx = 0; sx < 24; sx++) {
+                    stuckCheckList[(int) xEx][(int) yEx][sx] = new Vector3(0, 0, 0);
+                    stuckArray[(int) xEx][(int) yEx][sx] = new Vector3(0, 0, 0);
                 }
-                for(int gType = 0; gType <4;gType++){
-                    forbid.forbidList((int)xEx,(int)yEx,gType,(int)xEx,(int)yEx,0);
-                    aList.allowedList((int)xEx,(int)yEx,gType,(int)xEx,(int)yEx,0);
+                for (int gType = 0; gType < 4; gType++) {
+                    forbid.forbidList((int) xEx, (int) yEx, gType, (int) xEx, (int) yEx, 0);
+                    aList.allowedList((int) xEx, (int) yEx, gType, (int) xEx, (int) yEx, 0);
 
 
                 }
@@ -698,24 +729,35 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
         //GENERATE THE WORLD
 
+//STARTING GEAR
 
+        for(int i = 0 ; i<lvlVar.brokenList.size(); i++)
+        {
+            brokenHingeContainer[(int)lvlVar.brokenList.get(i).x][(int)lvlVar.brokenList.get(i).y] = new Vector2(0,0);
+        }
 
-        if(starterGearType ==1){
+        starterGearType = lvlVar.varList.get(2);
+        starterX = lvlVar.varList.get(0);
+        starterY = lvlVar.varList.get(1);
+
+        if (starterGearType == 1) {
             sprite = new Sprite(kucuk1);
-            sprite.setSize(5.5f, 5.5f);}
-        if(starterGearType==2){
+            sprite.setSize(5.5f, 5.5f);
+        }
+        if (starterGearType == 2) {
             sprite = new Sprite(orta1);
-            sprite.setSize(10.8f, 10.8f);}
-        if(starterGearType==3){
+            sprite.setSize(10.8f, 10.8f);
+        }
+        if (starterGearType == 3) {
             sprite = new Sprite(buyuk1);
-            sprite.setSize(16f, 16f);}
+            sprite.setSize(16f, 16f);
+        }
 
-        sprite.setPosition(pointCoordinates[starterX][starterY].x- sprite.getWidth()/2, pointCoordinates[starterX][starterY].y - sprite.getHeight()/2);
+        sprite.setPosition(pointCoordinates[starterX][starterY].x - sprite.getWidth() / 2, pointCoordinates[starterX][starterY].y - sprite.getHeight() / 2);
 
 
-
-        spriteArray[starterX][starterY][0] = new Vector3(starterX,starterY,starterGearType);
-        isItRotating[starterX][starterY] = new Vector2(1,0.5f);
+        spriteArray[starterX][starterY][0] = new Vector3(starterX, starterY, starterGearType);
+        isItRotating[starterX][starterY] = new Vector2(1, 0.5f);
         spriteContainer[starterX][starterY] = sprite;
         if (starterGearType == 1) {
             forbid.forbidList(starterX, starterY, 1, starterX, starterY, 1);
@@ -844,81 +886,78 @@ public class Level1 extends ApplicationAdapter implements Screen {
             }
         }
 
-        if(starterGearType == 1){
-            if(starterX+1<world_dotx_count)
-                aList.allowedList(starterX+1,starterY,2,starterX+1,starterY,2);
-            if(starterY+1<world_doty_count)
-                aList.allowedList(starterX,starterY+1,2,starterX,starterY+1,2);
-            if(starterX-1>= 0)
-                aList.allowedList(starterX-1,starterY,2,starterX-1,starterY,2);
+        if (starterGearType == 1) {
+            if (starterX + 1 < world_dotx_count)
+                aList.allowedList(starterX + 1, starterY, 2, starterX + 1, starterY, 2);
+            if (starterY + 1 < world_doty_count)
+                aList.allowedList(starterX, starterY + 1, 2, starterX, starterY + 1, 2);
+            if (starterX - 1 >= 0)
+                aList.allowedList(starterX - 1, starterY, 2, starterX - 1, starterY, 2);
 
-            if(starterY-1>=0)
-                aList.allowedList(starterX,starterY-1,2,starterX,starterY-1,2);
-
-
-            if(starterX+1<world_dotx_count && starterY + 1 < world_doty_count)
-                aList.allowedList(starterX+1,starterY+1,3,starterX+1,starterY+1,3);
-            if(starterY+1<world_doty_count  && starterX-1>=0)
-                aList.allowedList(starterX-1,starterY+1,3,starterX-1,starterY+1,3);
-            if(starterX-1>= 0 && starterY-1>=0)
-                aList.allowedList(starterX-1,starterY-1,3,starterX-1,starterY-1,3);
-
-            if(starterY-1>=0 && starterX+1<world_dotx_count)
-                aList.allowedList(starterX+1,starterY-1,3,starterX+1,starterY-1,3);
+            if (starterY - 1 >= 0)
+                aList.allowedList(starterX, starterY - 1, 2, starterX, starterY - 1, 2);
 
 
-        }
+            if (starterX + 1 < world_dotx_count && starterY + 1 < world_doty_count)
+                aList.allowedList(starterX + 1, starterY + 1, 3, starterX + 1, starterY + 1, 3);
+            if (starterY + 1 < world_doty_count && starterX - 1 >= 0)
+                aList.allowedList(starterX - 1, starterY + 1, 3, starterX - 1, starterY + 1, 3);
+            if (starterX - 1 >= 0 && starterY - 1 >= 0)
+                aList.allowedList(starterX - 1, starterY - 1, 3, starterX - 1, starterY - 1, 3);
 
-        if(starterGearType == 2){
-
-            if(starterX+1<world_dotx_count)
-                aList.allowedList(starterX+1,starterY,1,starterX+1,starterY,1);
-            if(starterY+1<world_doty_count)
-                aList.allowedList(starterX,starterY+1,1,starterX,starterY+1,1);
-            if(starterX-1>= 0)
-                aList.allowedList(starterX-1,starterY,1,starterX-1,starterY,1);
-
-            if(starterY-1>=0)
-                aList.allowedList(starterX,starterY-1,1,starterX,starterY-1,1);
-
-
-            if(starterX+1<world_dotx_count && starterY + 1 < world_doty_count)
-                aList.allowedList(starterX+1,starterY+1,2,starterX+1,starterY+1,2);
-            if(starterY+1<world_doty_count  && starterX-1>=0)
-                aList.allowedList(starterX-1,starterY+1,2,starterX-1,starterY+1,2);
-            if(starterX-1>= 0 && starterY-1>=0)
-                aList.allowedList(starterX-1,starterY-1,2,starterX-1,starterY-1,2);
-
-            if(starterY-1>=0 && starterX+1<world_dotx_count)
-                aList.allowedList(starterX+1,starterY-1,2,starterX+1,starterY-1,2);
-
+            if (starterY - 1 >= 0 && starterX + 1 < world_dotx_count)
+                aList.allowedList(starterX + 1, starterY - 1, 3, starterX + 1, starterY - 1, 3);
 
 
         }
 
-        if(starterGearType == 3){
-            if(starterX+1<world_dotx_count && starterY + 1 < world_doty_count)
-                aList.allowedList(starterX+1,starterY+1,1,starterX+1,starterY+1,1);
-            if(starterY+1<world_doty_count  && starterX-1>=0)
-                aList.allowedList(starterX-1,starterY+1,1,starterX-1,starterY+1,1);
-            if(starterX-1>= 0 && starterY-1>=0)
-                aList.allowedList(starterX-1,starterY-1,1,starterX-1,starterY-1,1);
+        if (starterGearType == 2) {
 
-            if(starterY-1>=0 && starterX+1<world_dotx_count)
-                aList.allowedList(starterX+1,starterY-1,1,starterX+1,starterY-1,1);
+            if (starterX + 1 < world_dotx_count)
+                aList.allowedList(starterX + 1, starterY, 1, starterX + 1, starterY, 1);
+            if (starterY + 1 < world_doty_count)
+                aList.allowedList(starterX, starterY + 1, 1, starterX, starterY + 1, 1);
+            if (starterX - 1 >= 0)
+                aList.allowedList(starterX - 1, starterY, 1, starterX - 1, starterY, 1);
+
+            if (starterY - 1 >= 0)
+                aList.allowedList(starterX, starterY - 1, 1, starterX, starterY - 1, 1);
 
 
+            if (starterX + 1 < world_dotx_count && starterY + 1 < world_doty_count)
+                aList.allowedList(starterX + 1, starterY + 1, 2, starterX + 1, starterY + 1, 2);
+            if (starterY + 1 < world_doty_count && starterX - 1 >= 0)
+                aList.allowedList(starterX - 1, starterY + 1, 2, starterX - 1, starterY + 1, 2);
+            if (starterX - 1 >= 0 && starterY - 1 >= 0)
+                aList.allowedList(starterX - 1, starterY - 1, 2, starterX - 1, starterY - 1, 2);
+
+            if (starterY - 1 >= 0 && starterX + 1 < world_dotx_count)
+                aList.allowedList(starterX + 1, starterY - 1, 2, starterX + 1, starterY - 1, 2);
 
 
-            if(starterX+2<world_dotx_count)
-                aList.allowedList(starterX+2,starterY,3,starterX+2,starterY,3);
-            if(starterX-2>=0)
-                aList.allowedList(starterX-2,starterY,3,starterX-2,starterY,3);
-            if(starterY-2>=0)
-                aList.allowedList(starterX,starterY-2,3,starterX,starterY-2,3);
+        }
 
-            if(starterY+2<world_doty_count)
-                aList.allowedList(starterX,starterY+2,3,starterX,starterY+2,3);
+        if (starterGearType == 3) {
+            if (starterX + 1 < world_dotx_count && starterY + 1 < world_doty_count)
+                aList.allowedList(starterX + 1, starterY + 1, 1, starterX + 1, starterY + 1, 1);
+            if (starterY + 1 < world_doty_count && starterX - 1 >= 0)
+                aList.allowedList(starterX - 1, starterY + 1, 1, starterX - 1, starterY + 1, 1);
+            if (starterX - 1 >= 0 && starterY - 1 >= 0)
+                aList.allowedList(starterX - 1, starterY - 1, 1, starterX - 1, starterY - 1, 1);
+
+            if (starterY - 1 >= 0 && starterX + 1 < world_dotx_count)
+                aList.allowedList(starterX + 1, starterY - 1, 1, starterX + 1, starterY - 1, 1);
+
+
+            if (starterX + 2 < world_dotx_count)
+                aList.allowedList(starterX + 2, starterY, 3, starterX + 2, starterY, 3);
+            if (starterX - 2 >= 0)
+                aList.allowedList(starterX - 2, starterY, 3, starterX - 2, starterY, 3);
+            if (starterY - 2 >= 0)
+                aList.allowedList(starterX, starterY - 2, 3, starterX, starterY - 2, 3);
+
+            if (starterY + 2 < world_doty_count)
+                aList.allowedList(starterX, starterY + 2, 3, starterX, starterY + 2, 3);
 
 
         }
@@ -926,121 +965,121 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 //GOAL GEAR
 
-
-
-
-        if(goalGearType ==1){
+        for(int k = 0; k<goalStarter.size();k++)
+        {
+        if (goalStarter.get(k).z == 1) {
             sprite = new Sprite(kucuk1);
-            sprite.setSize(5.5f, 5.5f);}
-        if(goalGearType==2){
+            sprite.setSize(5.5f, 5.5f);
+        }
+        if (goalStarter.get(k).z == 2) {
             sprite = new Sprite(orta1);
-            sprite.setSize(10.8f, 10.8f);}
-        if(goalGearType==3){
+            sprite.setSize(10.8f, 10.8f);
+        }
+        if (goalStarter.get(k).z == 3) {
             sprite = new Sprite(buyuk1);
-            sprite.setSize(16f, 16f);}
+            sprite.setSize(16f, 16f);
+        }
 
-        sprite.setPosition(pointCoordinates[goalStarterX][goalStarterY].x- sprite.getWidth()/2, pointCoordinates[goalStarterX][goalStarterY].y - sprite.getHeight()/2);
+        sprite.setPosition(pointCoordinates[(int)goalStarter.get(k).x][(int)goalStarter.get(k).y].x - sprite.getWidth() / 2, pointCoordinates[(int)goalStarter.get(k).x][(int)goalStarter.get(k).y].y - sprite.getHeight() / 2);
 
 
+        spriteArray[(int)goalStarter.get(k).x][(int)goalStarter.get(k).y][0] = new Vector3((int)goalStarter.get(k).x, (int)goalStarter.get(k).y, goalStarter.get(k).z);
+        isItRotating[(int)goalStarter.get(k).x][(int)goalStarter.get(k).y] = new Vector2(0, 0.5f);
+        spriteContainer[(int)goalStarter.get(k).x][(int)goalStarter.get(k).y] = sprite;
+        if (goalStarter.get(k).z == 1) {
+            forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 1, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 1);
+            forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 2, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 2);
+            forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 3, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 3);
 
-
-        spriteArray[goalStarterX][goalStarterY][0] = new Vector3(goalStarterX,goalStarterY,goalGearType);
-        isItRotating[goalStarterX][goalStarterY] = new Vector2(0,0.5f);
-        spriteContainer[goalStarterX][goalStarterY] = sprite;
-        if (goalGearType == 1) {
-            forbid.forbidList(goalStarterX, goalStarterY, 1, goalStarterX, goalStarterY, 1);
-            forbid.forbidList(goalStarterX, goalStarterY, 2, goalStarterX, goalStarterY, 2);
-            forbid.forbidList(goalStarterX, goalStarterY, 3, goalStarterX, goalStarterY, 3);
-
-            if (goalStarterX + 1 < world_dotx_count)
-                forbid.forbidList(goalStarterX + 1, goalStarterY, 3, goalStarterX + 1, goalStarterY, 3);
-            if (goalStarterY + 1 < world_doty_count)
-                forbid.forbidList(goalStarterX, goalStarterY + 1, 3, goalStarterX, goalStarterY + 1, 3);
-            if (goalStarterX - 1 >= 0)
-                forbid.forbidList(goalStarterX - 1, goalStarterY, 3, goalStarterX - 1, goalStarterY, 3);
-            if (goalStarterY - 1 >= 0)
-                forbid.forbidList(goalStarterX, goalStarterY - 1, 3, goalStarterX, goalStarterY - 1, 3);
+            if ((int)goalStarter.get(k).x + 1 < world_dotx_count)
+                forbid.forbidList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 3, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 3);
+            if ((int)goalStarter.get(k).y + 1 < world_doty_count)
+                forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 3, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 3);
+            if ((int)goalStarter.get(k).x - 1 >= 0)
+                forbid.forbidList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 3, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 3);
+            if ((int)goalStarter.get(k).y - 1 >= 0)
+                forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 3, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 3);
 
 
         }
-        if (goalGearType == 2) {
-            forbid.forbidList(goalStarterX, goalStarterY, 1, goalStarterX, goalStarterY, 1);
-            forbid.forbidList(goalStarterX, goalStarterY, 2, goalStarterX, goalStarterY, 2);
-            forbid.forbidList(goalStarterX, goalStarterY, 3, goalStarterX, goalStarterY, 3);
+        if (goalStarter.get(k).z == 2) {
+            forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 1, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 1);
+            forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 2, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 2);
+            forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 3, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 3);
 
-            if (goalStarterX + 1 < world_dotx_count)
-                forbid.forbidList(goalStarterX + 1, goalStarterY, 2, goalStarterX + 1, goalStarterY, 2);
-            if (goalStarterY + 1 < world_doty_count)
-                forbid.forbidList(goalStarterX, goalStarterY + 1, 2, goalStarterX, goalStarterY + 1, 2);
-            if (goalStarterX - 1 >= 0)
-                forbid.forbidList(goalStarterX - 1, goalStarterY, 2, goalStarterX - 1, goalStarterY, 2);
-            if (goalStarterY - 1 >= 0)
-                forbid.forbidList(goalStarterX, goalStarterY - 1, 2, goalStarterX, goalStarterY - 1, 2);
+            if ((int)goalStarter.get(k).x + 1 < world_dotx_count)
+                forbid.forbidList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 2, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 2);
+            if ((int)goalStarter.get(k).y + 1 < world_doty_count)
+                forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 2, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 2);
+            if ((int)goalStarter.get(k).x - 1 >= 0)
+                forbid.forbidList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 2, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 2);
+            if ((int)goalStarter.get(k).y - 1 >= 0)
+                forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 2, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 2);
 
-            if (goalStarterX + 1 < world_dotx_count)
-                forbid.forbidList(goalStarterX + 1, goalStarterY, 3, goalStarterX + 1, goalStarterY, 3);
-            if (goalStarterY + 1 < world_doty_count)
-                forbid.forbidList(goalStarterX, goalStarterY + 1, 3, goalStarterX, goalStarterY + 1, 3);
-            if (goalStarterX - 1 >= 0)
-                forbid.forbidList(goalStarterX - 1, goalStarterY, 3, goalStarterX - 1, goalStarterY, 3);
-            if (goalStarterY - 1 >= 0)
-                forbid.forbidList(goalStarterX, goalStarterY - 1, 3, goalStarterX, goalStarterY - 1, 3);
+            if ((int)goalStarter.get(k).x + 1 < world_dotx_count)
+                forbid.forbidList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 3, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 3);
+            if ((int)goalStarter.get(k).y + 1 < world_doty_count)
+                forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 3, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 3);
+            if ((int)goalStarter.get(k).x - 1 >= 0)
+                forbid.forbidList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 3, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 3);
+            if ((int)goalStarter.get(k).y - 1 >= 0)
+                forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 3, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 3);
 
-            if (goalStarterX + 1 < world_dotx_count && goalStarterY + 1 < world_doty_count) {
-                forbid.forbidList(goalStarterX + 1, goalStarterY + 1, 3, goalStarterX + 1, goalStarterY + 1, 3);
+            if ((int)goalStarter.get(k).x + 1 < world_dotx_count && (int)goalStarter.get(k).y + 1 < world_doty_count) {
+                forbid.forbidList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y + 1, 3, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y + 1, 3);
 
-
-            }
-
-            if (goalStarterY + 1 < world_doty_count && goalStarterX - 1 >= 0) {
-                forbid.forbidList(goalStarterX - 1, goalStarterY + 1, 3, goalStarterX - 1, goalStarterY + 1, 3);
 
             }
 
-            if (goalStarterX - 1 >= 0 && goalStarterY - 1 >= 0) {
-                forbid.forbidList(goalStarterX - 1, goalStarterY - 1, 3, goalStarterX - 1, goalStarterY - 1, 3);
+            if ((int)goalStarter.get(k).y + 1 < world_doty_count && (int)goalStarter.get(k).x - 1 >= 0) {
+                forbid.forbidList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y + 1, 3, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y + 1, 3);
 
             }
 
-            if (goalStarterY - 1 >= 0 && goalStarterX < world_dotx_count) {
-                forbid.forbidList(goalStarterX + 1, goalStarterY - 1, 3, goalStarterX + 1, goalStarterY - 1, 3);
+            if ((int)goalStarter.get(k).x - 1 >= 0 && (int)goalStarter.get(k).y - 1 >= 0) {
+                forbid.forbidList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y - 1, 3, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y - 1, 3);
+
+            }
+
+            if ((int)goalStarter.get(k).y - 1 >= 0 && (int)goalStarter.get(k).x < world_dotx_count) {
+                forbid.forbidList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y - 1, 3, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y - 1, 3);
 
             }
 
 
         }
-        if (goalGearType == 3) {
+        if (goalStarter.get(k).z == 3) {
             //System.ot.println("Working3");
-            forbid.forbidList(goalStarterX, goalStarterY, 1, goalStarterX, goalStarterY, 1);
-            forbid.forbidList(goalStarterX, goalStarterY, 2, goalStarterX, goalStarterY, 2);
-            forbid.forbidList(goalStarterX, goalStarterY, 3, goalStarterX, goalStarterY, 3);
+            forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 1, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 1);
+            forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 2, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 2);
+            forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 3, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y, 3);
 
-            if (goalStarterX + 1 < world_dotx_count) {
-                forbid.forbidList(goalStarterX + 1, goalStarterY, 1, goalStarterX + 1, goalStarterY, 1);
-                forbid.forbidList(goalStarterX + 1, goalStarterY, 2, goalStarterX + 1, goalStarterY, 2);
-                forbid.forbidList(goalStarterX + 1, goalStarterY, 3, goalStarterX + 1, goalStarterY, 3);
+            if ((int)goalStarter.get(k).x + 1 < world_dotx_count) {
+                forbid.forbidList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 1, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 1);
+                forbid.forbidList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 2, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 2);
+                forbid.forbidList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 3, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 3);
 
-
-            }
-
-            if (goalStarterY + 1 < world_doty_count) {
-                forbid.forbidList(goalStarterX, goalStarterY + 1, 1, goalStarterX, goalStarterY + 1, 1);
-                forbid.forbidList(goalStarterX, goalStarterY + 1, 2, goalStarterX, goalStarterY + 1, 2);
-                forbid.forbidList(goalStarterX, goalStarterY + 1, 3, goalStarterX, goalStarterY + 1, 3);
 
             }
 
-            if (goalStarterX - 1 >= 0) {
-                forbid.forbidList(goalStarterX - 1, goalStarterY, 1, goalStarterX - 1, goalStarterY, 1);
-                forbid.forbidList(goalStarterX - 1, goalStarterY, 2, goalStarterX - 1, goalStarterY, 2);
-                forbid.forbidList(goalStarterX - 1, goalStarterY, 3, goalStarterX - 1, goalStarterY, 3);
+            if ((int)goalStarter.get(k).y + 1 < world_doty_count) {
+                forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 1, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 1);
+                forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 2, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 2);
+                forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 3, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 3);
 
             }
 
-            if (goalStarterY - 1 >= 0) {
-                forbid.forbidList(goalStarterX, goalStarterY - 1, 1, goalStarterX, goalStarterY - 1, 1);
-                forbid.forbidList(goalStarterX, goalStarterY - 1, 2, goalStarterX, goalStarterY - 1, 2);
-                forbid.forbidList(goalStarterX, goalStarterY - 1, 3, goalStarterX, goalStarterY - 1, 3);
+            if ((int)goalStarter.get(k).x - 1 >= 0) {
+                forbid.forbidList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 1, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 1);
+                forbid.forbidList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 2, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 2);
+                forbid.forbidList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 3, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 3);
+
+            }
+
+            if ((int)goalStarter.get(k).y - 1 >= 0) {
+                forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 1, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 1);
+                forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 2, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 2);
+                forbid.forbidList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 3, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 3);
 
             }
 
@@ -1048,114 +1087,110 @@ public class Level1 extends ApplicationAdapter implements Screen {
             //LARGE CROSSES
 
 
-            if (goalStarterX + 1 < world_dotx_count && goalStarterY + 1 < world_doty_count) {
-                forbid.forbidList(goalStarterX + 1, goalStarterY + 1, 2, goalStarterX + 1, goalStarterY + 1, 2);
-                forbid.forbidList(goalStarterX + 1, goalStarterY + 1, 3, goalStarterX + 1, goalStarterY + 1, 3);
+            if ((int)goalStarter.get(k).x + 1 < world_dotx_count && (int)goalStarter.get(k).y + 1 < world_doty_count) {
+                forbid.forbidList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y + 1, 2, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y + 1, 2);
+                forbid.forbidList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y + 1, 3, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y + 1, 3);
 
 
             }
 
-            if (goalStarterY + 1 < world_doty_count && goalStarterX - 1 >= 0) {
-                forbid.forbidList(goalStarterX - 1, goalStarterY + 1, 2, goalStarterX - 1, goalStarterY + 1, 2);
-                forbid.forbidList(goalStarterX - 1, goalStarterY + 1, 3, goalStarterX - 1, goalStarterY + 1, 3);
+            if ((int)goalStarter.get(k).y + 1 < world_doty_count && (int)goalStarter.get(k).x - 1 >= 0) {
+                forbid.forbidList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y + 1, 2, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y + 1, 2);
+                forbid.forbidList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y + 1, 3, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y + 1, 3);
 
             }
 
-            if (goalStarterX - 1 >= 0 && goalStarterY - 1 >= 0) {
-                forbid.forbidList(goalStarterX - 1, goalStarterY - 1, 2, goalStarterX - 1, goalStarterY - 1, 2);
-                forbid.forbidList(goalStarterX - 1, goalStarterY - 1, 3, goalStarterX - 1, goalStarterY - 1, 3);
+            if ((int)goalStarter.get(k).x - 1 >= 0 && (int)goalStarter.get(k).y - 1 >= 0) {
+                forbid.forbidList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y - 1, 2, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y - 1, 2);
+                forbid.forbidList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y - 1, 3, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y - 1, 3);
 
             }
 
-            if (goalStarterY - 1 >= 0 && goalStarterX < world_dotx_count) {
-                forbid.forbidList(goalStarterX + 1, goalStarterY - 1, 2, goalStarterX + 1, goalStarterY - 1, 2);
-                forbid.forbidList(goalStarterX + 1, goalStarterY - 1, 3, goalStarterX + 1, goalStarterY - 1, 3);
+            if ((int)goalStarter.get(k).y - 1 >= 0 && (int)goalStarter.get(k).x < world_dotx_count) {
+                forbid.forbidList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y - 1, 2, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y - 1, 2);
+                forbid.forbidList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y - 1, 3, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y - 1, 3);
 
             }
         }
 
-        if(goalGearType == 1){
-            if(goalStarterX+1<world_dotx_count)
-                aList.allowedList(goalStarterX+1,goalStarterY,2,goalStarterX+1,goalStarterY,2);
-            if(goalStarterY+1<world_doty_count)
-                aList.allowedList(goalStarterX,goalStarterY+1,2,goalStarterX,goalStarterY+1,2);
-            if(goalStarterX-1>= 0)
-                aList.allowedList(goalStarterX-1,goalStarterY,2,goalStarterX-1,goalStarterY,2);
+        if (goalStarter.get(k).z == 1) {
+            if ((int)goalStarter.get(k).x + 1 < world_dotx_count)
+                aList.allowedList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 2, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 2);
+            if ((int)goalStarter.get(k).y + 1 < world_doty_count)
+                aList.allowedList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 2, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 2);
+            if ((int)goalStarter.get(k).x - 1 >= 0)
+                aList.allowedList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 2, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 2);
 
-            if(goalStarterY-1>=0)
-                aList.allowedList(goalStarterX,goalStarterY-1,2,goalStarterX,goalStarterY-1,2);
-
-
-            if(goalStarterX+1<world_dotx_count && goalStarterY + 1 < world_doty_count)
-                aList.allowedList(goalStarterX+1,goalStarterY+1,3,goalStarterX+1,goalStarterY+1,3);
-            if(goalStarterY+1<world_doty_count  && goalStarterX-1>=0)
-                aList.allowedList(goalStarterX-1,goalStarterY+1,3,goalStarterX-1,goalStarterY+1,3);
-            if(goalStarterX-1>= 0 && goalStarterY-1>=0)
-                aList.allowedList(goalStarterX-1,goalStarterY-1,3,goalStarterX-1,goalStarterY-1,3);
-
-            if(goalStarterY-1>=0 && goalStarterX+1<world_dotx_count)
-                aList.allowedList(goalStarterX+1,goalStarterY-1,3,goalStarterX+1,goalStarterY-1,3);
+            if ((int)goalStarter.get(k).y - 1 >= 0)
+                aList.allowedList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 2, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 2);
 
 
-        }
+            if ((int)goalStarter.get(k).x + 1 < world_dotx_count && (int)goalStarter.get(k).y + 1 < world_doty_count)
+                aList.allowedList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y + 1, 3, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y + 1, 3);
+            if ((int)goalStarter.get(k).y + 1 < world_doty_count && (int)goalStarter.get(k).x - 1 >= 0)
+                aList.allowedList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y + 1, 3, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y + 1, 3);
+            if ((int)goalStarter.get(k).x - 1 >= 0 && (int)goalStarter.get(k).y - 1 >= 0)
+                aList.allowedList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y - 1, 3, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y - 1, 3);
 
-        if(goalGearType == 2){
-
-            if(goalStarterX+1<world_dotx_count)
-                aList.allowedList(goalStarterX+1,goalStarterY,1,goalStarterX+1,goalStarterY,1);
-            if(goalStarterY+1<world_doty_count)
-                aList.allowedList(goalStarterX,goalStarterY+1,1,goalStarterX,goalStarterY+1,1);
-            if(goalStarterX-1>= 0)
-                aList.allowedList(goalStarterX-1,goalStarterY,1,goalStarterX-1,goalStarterY,1);
-
-            if(goalStarterY-1>=0)
-                aList.allowedList(goalStarterX,goalStarterY-1,1,goalStarterX,goalStarterY-1,1);
-
-
-            if(goalStarterX+1<world_dotx_count && goalStarterY + 1 < world_doty_count)
-                aList.allowedList(goalStarterX+1,goalStarterY+1,2,goalStarterX+1,goalStarterY+1,2);
-            if(goalStarterY+1<world_doty_count  && goalStarterX-1>=0)
-                aList.allowedList(goalStarterX-1,goalStarterY+1,2,goalStarterX-1,goalStarterY+1,2);
-            if(goalStarterX-1>= 0 && goalStarterY-1>=0)
-                aList.allowedList(goalStarterX-1,goalStarterY-1,2,goalStarterX-1,goalStarterY-1,2);
-
-            if(goalStarterY-1>=0 && goalStarterX+1<world_dotx_count)
-                aList.allowedList(goalStarterX+1,goalStarterY-1,2,goalStarterX+1,goalStarterY-1,2);
-
+            if ((int)goalStarter.get(k).y - 1 >= 0 && (int)goalStarter.get(k).x + 1 < world_dotx_count)
+                aList.allowedList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y - 1, 3, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y - 1, 3);
 
 
         }
 
-        if(goalGearType == 3){
-            if(goalStarterX+1<world_dotx_count && goalStarterY + 1 < world_doty_count)
-                aList.allowedList(goalStarterX+1,goalStarterY+1,1,goalStarterX+1,goalStarterY+1,1);
-            if(goalStarterY+1<world_doty_count  && goalStarterX-1>=0)
-                aList.allowedList(goalStarterX-1,goalStarterY+1,1,goalStarterX-1,goalStarterY+1,1);
-            if(goalStarterX-1>= 0 && goalStarterY-1>=0)
-                aList.allowedList(goalStarterX-1,goalStarterY-1,1,goalStarterX-1,goalStarterY-1,1);
+        if (goalStarter.get(k).z == 2) {
 
-            if(goalStarterY-1>=0 && goalStarterX+1<world_dotx_count)
-                aList.allowedList(goalStarterX+1,goalStarterY-1,1,goalStarterX+1,goalStarterY-1,1);
+            if ((int)goalStarter.get(k).x + 1 < world_dotx_count)
+                aList.allowedList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 1, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y, 1);
+            if ((int)goalStarter.get(k).y + 1 < world_doty_count)
+                aList.allowedList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 1, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 1, 1);
+            if ((int)goalStarter.get(k).x - 1 >= 0)
+                aList.allowedList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 1, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y, 1);
 
-
-
+            if ((int)goalStarter.get(k).y - 1 >= 0)
+                aList.allowedList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 1, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 1, 1);
 
 
-            if(goalStarterX+2<world_dotx_count)
-                aList.allowedList(goalStarterX+2,goalStarterY,3,goalStarterX+2,goalStarterY,3);
-            if(goalStarterX-2>=0)
-                aList.allowedList(goalStarterX-2,goalStarterY,3,goalStarterX-2,goalStarterY,3);
-            if(goalStarterY-2>=0)
-                aList.allowedList(goalStarterX,goalStarterY-2,3,goalStarterX,goalStarterY-2,3);
+            if ((int)goalStarter.get(k).x + 1 < world_dotx_count && (int)goalStarter.get(k).y + 1 < world_doty_count)
+                aList.allowedList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y + 1, 2, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y + 1, 2);
+            if ((int)goalStarter.get(k).y + 1 < world_doty_count && (int)goalStarter.get(k).x - 1 >= 0)
+                aList.allowedList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y + 1, 2, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y + 1, 2);
+            if ((int)goalStarter.get(k).x - 1 >= 0 && (int)goalStarter.get(k).y - 1 >= 0)
+                aList.allowedList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y - 1, 2, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y - 1, 2);
 
-            if(goalStarterY+2<world_doty_count)
-                aList.allowedList(goalStarterX,goalStarterY+2,3,goalStarterX,goalStarterY+2,3);
+            if ((int)goalStarter.get(k).y - 1 >= 0 && (int)goalStarter.get(k).x + 1 < world_dotx_count)
+                aList.allowedList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y - 1, 2, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y - 1, 2);
 
 
         }
 
+        if (goalStarter.get(k).z == 3) {
+            if ((int)goalStarter.get(k).x + 1 < world_dotx_count && (int)goalStarter.get(k).y + 1 < world_doty_count)
+                aList.allowedList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y + 1, 1, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y + 1, 1);
+            if ((int)goalStarter.get(k).y + 1 < world_doty_count && (int)goalStarter.get(k).x - 1 >= 0)
+                aList.allowedList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y + 1, 1, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y + 1, 1);
+            if ((int)goalStarter.get(k).x - 1 >= 0 && (int)goalStarter.get(k).y - 1 >= 0)
+                aList.allowedList((int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y - 1, 1, (int)goalStarter.get(k).x - 1, (int)goalStarter.get(k).y - 1, 1);
+
+            if ((int)goalStarter.get(k).y - 1 >= 0 && (int)goalStarter.get(k).x + 1 < world_dotx_count)
+                aList.allowedList((int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y - 1, 1, (int)goalStarter.get(k).x + 1, (int)goalStarter.get(k).y - 1, 1);
 
 
+            if ((int)goalStarter.get(k).x + 2 < world_dotx_count)
+                aList.allowedList((int)goalStarter.get(k).x + 2, (int)goalStarter.get(k).y, 3, (int)goalStarter.get(k).x + 2, (int)goalStarter.get(k).y, 3);
+            if ((int)goalStarter.get(k).x - 2 >= 0)
+                aList.allowedList((int)goalStarter.get(k).x - 2, (int)goalStarter.get(k).y, 3, (int)goalStarter.get(k).x - 2, (int)goalStarter.get(k).y, 3);
+            if ((int)goalStarter.get(k).y - 2 >= 0)
+                aList.allowedList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 2, 3, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y - 2, 3);
+
+            if ((int)goalStarter.get(k).y + 2 < world_doty_count)
+                aList.allowedList((int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 2, 3, (int)goalStarter.get(k).x, (int)goalStarter.get(k).y + 2, 3);
+
+
+        }
+
+    }
+///////////////////////////////////
 
 
 
@@ -1175,10 +1210,10 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
     }
 
-   
-       
 
-    
+
+
+
 
 
     @Override
@@ -1188,6 +1223,12 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
     @Override
     public void render(float delta) {
+
+        rec1.setSize(creatureSprite.getWidth(),creatureSprite.getHeight());
+        rec2.setSize(creatureSprite2.getWidth(),creatureSprite2.getHeight());
+
+        rec1.setPosition(creatureSprite.getX(),creatureSprite.getY());
+        rec2.setPosition(creatureSprite2.getX(),creatureSprite2.getY());
 
         switch (state) {
             case RUN: {
@@ -1216,9 +1257,9 @@ public class Level1 extends ApplicationAdapter implements Screen {
                 cameraUpdate(Gdx.graphics.getDeltaTime());
                 game.batch.setProjectionMatrix(cam.combined);
 
-                    checkTimer2 -= delta;
+                checkTimer2 -= delta;
                 if (checkTimer2 < 0) {
-                    checkTimer2 = 0.1f;
+                    checkTimer2 = 0.2f;
                     for (int xLoc = 0; xLoc < world_dotx_count; xLoc++) {
                         for (int yLoc = 0; yLoc < world_doty_count; yLoc++) {
 
@@ -1470,9 +1511,8 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
                             checkTimer -= delta;
                             if (checkTimer < 0) {
-                                checkTimer = 0.1f;
+                                checkTimer = 0.5f;
                                 if (spriteArray[xLoc][yLoc][0].z == 1.0) {
-
 
                                     //CHECK FOR LITTLE TO LARGE
 
@@ -1480,8 +1520,6 @@ public class Level1 extends ApplicationAdapter implements Screen {
                                         if (spriteArray[xLoc + 1][yLoc + 1][0].z == 3 && isItRotating[xLoc + 1][yLoc + 1].x == 1) {
 
                                             stuckCheckList[xLoc][yLoc][0].z = isItRotating[xLoc + 1][yLoc + 1].y;
-
-
                                         }
                                     }
                                     if (xLoc + 1 < world_dotx_count && yLoc - 1 >= 0) {
@@ -1779,13 +1817,6 @@ public class Level1 extends ApplicationAdapter implements Screen {
                 }
 
 
-
-
-
-
-
-
-
                 game.batch.begin();
                 if(fadeIn<200)
                 {
@@ -1860,11 +1891,10 @@ public class Level1 extends ApplicationAdapter implements Screen {
                     }
 
 
-                    //creatureSprite.draw(game.batch);
-                    creatureSprite2.draw(game.batch);
+
 
                     creatureSprite2.setPosition(a2 - creatureSprite2.getWidth() / 2, b2);
-                   // creatureSprite.setPosition(a - creatureSprite.getWidth() / 2, b);
+                    creatureSprite.setPosition(a - creatureSprite.getWidth() / 2, b);
 
                     badsprite.draw(game.batch);
                     creatureMovement(Gdx.graphics.getDeltaTime());
@@ -1882,9 +1912,29 @@ public class Level1 extends ApplicationAdapter implements Screen {
                     }
 
 
-                    if (Math.abs(spriteContainer[goalStarterX][goalStarterY].getRotation()) > 10) {
+                    ArrayList <Boolean> winBools = new ArrayList<>();
+                    if(winBools.size() != goalStarter.size())
+                    for(int g = 0; g<goalStarter.size();g++){
+                        winBools.add(false);
+                    }
 
-                        winCondition = true;
+                    for(int k = 0; k<goalStarter.size();k++) {
+                        if (Math.abs(spriteContainer[(int)goalStarter.get(k).x][(int)goalStarter.get(k).y].getRotation()) > 5) {
+
+
+                            winBools.set(k,true);
+                            prefs.putBoolean(getClass().getName(), false);
+                            prefs.flush();
+                        }
+                        else{
+                            winBools.set(k,false);
+                        }
+                    }
+
+                    for(int h= 0; h<winBools.size();h++){
+
+                       winCondition =  areAllTrue(winBools);
+
                     }
 
                     //System.out.println(spriteContainer[starterX][starterY].getRotation());
@@ -1933,6 +1983,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
 
+
                         if(prefs.getInteger("passedlevel",1)<nextLevel) {
                             prefs.putInteger("passedlevel", nextLevel);
                             prefs.flush();
@@ -1947,11 +1998,12 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
                             controller.whiteBox.setColor(0, 0, 0, 0);
+                            controller.timer.setColor(0,0,0,0);
                         }
 
                         WINTIMER = WINTIMER - Gdx.graphics.getDeltaTime();
                         controller.game.font.draw(game.batch, "WAIT FOR:  " + WINTIMER, 0, 0);
-                        if (goldBool && prefs.getBoolean("Level1", true)) {
+                        if (isLevelPassed && goldBool) {
                             for (int winX = 0; winX < world_dotx_count; winX++) {
                                 for (int winY = 0; winY < world_doty_count; winY++) {
                                     if (spriteContainer[winX][winY] != null) {
@@ -1985,7 +2037,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
                             VariableCalls.timeLeft = 100f;
 
 
-                            if(crateHad && prefs.getBoolean("Level1",true)) {
+                            if(isLevelPassed & crateHad) {
 
                                 prefs.putInteger("chest", prefs.getInteger("chest", 0) + 1);
                                 prefs.flush();
@@ -1994,11 +2046,10 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
 
-                            prefs.putBoolean("Level1", false);
 
-                            prefs.flush();
+
                             if(VariableCalls.gameEnd)
-                            VariableCalls.fadeOut += delta * 100;
+                                VariableCalls.fadeOut += delta * 100;
 
                             if (VariableCalls.fadeOut > 300) {
 
@@ -2045,7 +2096,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
                             VariableCalls.timeLeft = 100f;
 
                             if(VariableCalls.gameEnd)
-                            VariableCalls.fadeOut += delta * 100;
+                                VariableCalls.fadeOut += delta * 100;
 
                             if (VariableCalls.fadeOut > 300) {
 
@@ -2062,13 +2113,13 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
                     // controller.game.font.dispose();
-                    if (crateGot && prefs.getBoolean("Level1", true)) {
+                    if (crateGot && isLevelPassed) {
                         if (crateBoolean) {
                             crateTimer -= delta;
 
                             int xE = 0;
-                            for (int jCh = 0; jCh < VariableCalls.world_dotx_count; jCh++) {
-                                for (int kCh = 0; kCh < VariableCalls.world_doty_count; kCh++) {
+                            for (int jCh = 0; jCh <world_dotx_count; jCh++) {
+                                for (int kCh = 0; kCh < world_doty_count; kCh++) {
                                     for (int lCh = 0; lCh < 4; lCh++) {
                                         if (aList.allowedList[jCh][kCh][lCh] != null) {
 
@@ -2177,7 +2228,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
                 }
 
                 if(commenceCounter>300 && fadeIn<100){
-                   // threetwoone.setAlignment(center);
+                    threetwoone.setAlignment(center);
                     threetwoone.setText("3!");
                     threetwoone.draw(game.batch,1);
 
@@ -2208,21 +2259,6 @@ public class Level1 extends ApplicationAdapter implements Screen {
                 else{
 
                     VariableCalls.timeLeft -= delta;
-
-                }
-
-
-                switch(firstTrollState){
-
-
-                    case 1:{
-
-                        game.batch.draw(idleAnim.getKeyFrame(elapsedTimeIdle, true), a - trollidle.getWidth() / 160, b,0,0,200,138,0.05f,0.05f,0);
-                        elapsedTimeIdle += Gdx.graphics.getDeltaTime();
-
-
-                            break;}
-
 
                 }
 
@@ -2259,7 +2295,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
                 if (!controller.loseCond)
-                    controller.whiteBox.setSize((1 / VariableCalls.timeDivider) * VariableCalls.timeLeft * 100, 10);
+                    controller.     whiteBox.setSize(VariableCalls.timeLeft/2, 11 );
                 if (VariableCalls.timeLeft < 0) {
 
                     controller.loseCond = true;
@@ -2293,7 +2329,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
 
-               // game.setScreen(new LevelSelection(game));
+                // game.setScreen(new LevelSelection(game));
 
                 VariableCalls.gameEnd = false;
                 dispose();
@@ -2397,72 +2433,33 @@ public class Level1 extends ApplicationAdapter implements Screen {
                 double random = Math.random();
 
                 if (random < 0.25 && crX - 1 >= 0 && crY - 1 >= 0) {
+                    crX--;
+                    crY--;
 
-                    if(brokenHingeContainer[crX-1][crY-1].x != 1000 )
-                    {
-
-                        jumpDelay = -1;
-
-                    }
-
-                    else {
-                        crX--;
-                        crY--;
-
-                        jumpDelay = 3;
-                        jump = true;
-                    }
+                    jumpDelay = 3;
+                    jump = true;
                 }
                 if (random < 0.5 && random > 0.25 && crX - 1 >= 0 && crY + 1 < world_doty_count) {
+                    crX--;
+                    crY++;
 
-                    if(brokenHingeContainer[crX-1][crY+1].x != 1000 )
-                    {
-
-                        jumpDelay = -1;
-
-                    }
-
-                    else {
-                        crX--;
-                        crY++;
-
-                        jumpDelay = 3;
-                        jump = true;
-                    }
+                    jumpDelay = 3;
+                    jump = true;
 
                 }
                 if (random < 0.75 && random > 0.5 && crX + 1 < world_dotx_count && crY + 1 < world_doty_count) {
+                    crX++;
+                    crY++;
 
-                    if(brokenHingeContainer[crX+1][crY+1].x != 1000 )
-                    {
-
-                        jumpDelay = -1;
-
-                    }
-                   else {
-                        crX++;
-                        crY++;
-
-                        jumpDelay = 3;
-                        jump = true;
-                    }
+                    jumpDelay = 3;
+                    jump = true;
                 }
                 if (random < 1 && random > 0.75 && crX + 1 < world_dotx_count && crY - 1 >= 0) {
+                    crX++;
+                    crY--;
 
-                    if(brokenHingeContainer[crX+1][crY-1].x != 1000 )
-                    {
-
-                        jumpDelay = -1;
-
-                    }
-
-                    else {
-                        crX++;
-                        crY--;
-
-                        jumpDelay = 3;
-                        jump = true;
-                    }
+                    jumpDelay = 3;
+                    jump = true;
                 }
 
             }
@@ -2472,13 +2469,13 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
             if ((creaturePosition[crX][crY].y - b) < 0) {
-                b += (creaturePosition[crX][crY].y - b) * 3 * Delta;
+                b += (creaturePosition[crX][crY].y - b) * Interpolation.circleIn.apply(0.25f);
                 //System.out.println("<0");
             } else if ((creaturePosition[crX][crY].y - b) > 0) {
-                b += (creaturePosition[crX][crY].y - b) * 3 * Delta;
+                b += (creaturePosition[crX][crY].y - b) * Interpolation.circleOut.apply(Delta / 4);
                 //System.out.println(">0");
             } else {
-                b += (creaturePosition[crX][crY].y - b) * 3 * Delta;
+                b += (creaturePosition[crX][crY].y - b) * 1.05f * Interpolation.circleIn.apply(0.2f);
 
                 //System.out.println("else");
             }
@@ -2511,13 +2508,13 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
             if ((creaturePosition[crX][crY].y - b) < 0) {
-                b += (creaturePosition[crX][crY].y - b) * 3 * Delta;
+                b += (creaturePosition[crX][crY].y - b) * Interpolation.circleIn.apply(0.25f);
                 //System.out.println("<0");
             } else if ((creaturePosition[crX][crY].y - b) > 0) {
-                b += (creaturePosition[crX][crY].y - b) * 3 * Delta;
+                b += (creaturePosition[crX][crY].y - b) * Interpolation.circleOut.apply(Delta / 4);
                 //System.out.println(">0");
             } else {
-                b += (creaturePosition[crX][crY].y - b) * 3 * Delta;
+                b += (creaturePosition[crX][crY].y - b) * 1.05f * Interpolation.circleIn.apply(0.2f);
 
                 //System.out.println("else");
             }
@@ -2533,19 +2530,23 @@ public class Level1 extends ApplicationAdapter implements Screen {
             if (isItJumping) {
 
 
+                creatureSprite.setOrigin(center);
+
                 jumpFreq = jumpFreq - Delta;
                 if (jumpFreq < 0) {
                     jumpTime--;
+                    creatureSprite.setRotation(0);
                     if (isItInTheAir) {
 
-                        creatureSprite.setColor(Color.RED);
+
+                        creatureSprite.setRotation(creatureSprite.getRotation()-20f);
                         isItInTheAir = false;
                         jumpFreq = 1;
 
 
                     } else {
                         creatureSprite.setColor(Color.WHITE);
-
+                        creatureSprite.setRotation(creatureSprite.getRotation()+20f);
                         isItInTheAir = true;
                         jumpFreq = 1;
 
@@ -2565,16 +2566,13 @@ public class Level1 extends ApplicationAdapter implements Screen {
                 if (brokenHingeContainer[crX][crY].x != 1000 &&
                         brokenHingeContainer[crX][crY].y != 1000) {
                     jumpTime++;
+                    creatureSprite.setRotation(0);
                 }
 
                 else{
-
-                    checkTimer =-1;
-                    checkTimer2 = -1;
-
                     jumpTime = 8;
                     isItJumping = false;
-
+                    creatureSprite.setRotation(0);
 
                     breakBlockTimer = 4;
 
@@ -2605,13 +2603,13 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
             if (spawnTimer < 0) {
 
-                creatureSprite.setAlpha(0);
+                creatureSprite.setColor(0,0,0,0);
                 b = 1000;
                 creatureSprite.setPosition(a - creatureSprite.getWidth() / 2, b);
                 creatureSprite.setColor(Color.WHITE);
 
 
-                creatureSprite.setAlpha(1);
+                creatureSprite.setColor(1,1,1,1);
 
                 //System.out.println("spawnTimer  ="  + spawnTimer);
                 int locationx = 2;
@@ -2667,73 +2665,33 @@ public class Level1 extends ApplicationAdapter implements Screen {
                 double random = Math.random();
 
                 if (random < 0.25 && crX2 - 1 >= 0 && crY2 - 1 >= 0) {
+                    crX2--;
+                    crY2--;
 
-                    if(brokenHingeContainer[crX2-1][crY2-1].x != 1000 )
-                    {
-
-                        jumpDelay2 = -1;
-
-                    }
-                   else {
-                        crX2--;
-                        crY2--;
-
-                        jumpDelay2 = 3;
-                        jump2 = true;
-                    }
+                    jumpDelay2 = 3;
+                    jump2 = true;
                 }
                 if (random < 0.5 && random > 0.25 && crX2 - 1 >= 0 && crY2 + 1 < world_doty_count) {
+                    crX2--;
+                    crY2++;
 
-                    if(brokenHingeContainer[crX2-1][crY2+1].x != 1000 )
-                    {
-
-                        jumpDelay2 = -1;
-
-                    }
-
-                    else {
-                        crX2--;
-                        crY2++;
-
-                        jumpDelay2 = 3;
-                        jump2 = true;
-                    }
+                    jumpDelay2 = 3;
+                    jump2 = true;
 
                 }
                 if (random < 0.75 && random > 0.5 && crX2 + 1 < world_dotx_count && crY2 + 1 < world_doty_count) {
+                    crX2++;
+                    crY2++;
 
-                    if(brokenHingeContainer[crX2+1][crY2+1].x != 1000 )
-                    {
-
-                        jumpDelay2 = -1;
-
-                    }
-
-                    else {
-                        crX2++;
-                        crY2++;
-
-                        jumpDelay2 = 3;
-                        jump2 = true;
-                    }
+                    jumpDelay2 = 3;
+                    jump2 = true;
                 }
                 if (random < 1 && random > 0.75 && crX2 + 1 < world_dotx_count && crY2 - 1 >= 0) {
+                    crX2++;
+                    crY2--;
 
-                    if(brokenHingeContainer[crX2+1][crY2-1].x != 1000 )
-                    {
-
-                        jumpDelay2 = -1;
-
-                    }
-
-
-                    else {
-                        crX2++;
-                        crY2--;
-
-                        jumpDelay2 = 3;
-                        jump2 = true;
-                    }
+                    jumpDelay2 = 3;
+                    jump2 = true;
                 }
 
             }
@@ -2743,13 +2701,13 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
             if ((creaturePosition2[crX2][crY2].y - b2) < 0) {
-                b2 += (creaturePosition2[crX2][crY2].y - b2) * 3 * Delta;
+                b2 += (creaturePosition2[crX2][crY2].y - b2) * Interpolation.circleIn.apply(0.25f);
                 //System.out.println("<0");
             } else if ((creaturePosition2[crX2][crY2].y - b2) > 0) {
-                b2 += (creaturePosition2[crX2][crY2].y - b2) * 3 * Delta;
+                b2 += (creaturePosition2[crX2][crY2].y - b2) * Interpolation.circleOut.apply(Delta / 4);
                 //System.out.println(">0");
             } else {
-                b2 += (creaturePosition2[crX2][crY2].y - b2)* 3 * Delta;
+                b2 += (creaturePosition2[crX2][crY2].y - b2) * 1.05f * Interpolation.circleIn.apply(0.2f);
 
                 //System.out.println("else");
             }
@@ -2783,13 +2741,13 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
             if ((creaturePosition2[crX2][crY2].y - b2) < 0) {
-                b2 += (creaturePosition2[crX2][crY2].y - b2) * 3 * Delta;
+                b2 += (creaturePosition2[crX2][crY2].y - b2) * Interpolation.circleIn.apply(0.25f);
                 //System.out.println("<0");
             } else if ((creaturePosition2[crX2][crY2].y - b2) > 0) {
-                b2 += (creaturePosition2[crX2][crY2].y - b2) * 3 * Delta;
+                b2 += (creaturePosition2[crX2][crY2].y - b2) * Interpolation.circleOut.apply(Delta / 4);
                 //System.out.println(">0");
             } else {
-                b2 += (creaturePosition2[crX2][crY2].y - b2) * 3 * Delta;
+                b2 += (creaturePosition2[crX2][crY2].y - b2) * 1.05f * Interpolation.circleIn.apply(0.2f);
 
                 //System.out.println("else");
             }
@@ -2805,18 +2763,20 @@ public class Level1 extends ApplicationAdapter implements Screen {
             //System.out.println(jumpFreq);
             if(isItJumping2){
 
+                creatureSprite2.setOrigin(center);
 
                 jumpFreq2 = jumpFreq2-Delta;
                 if (jumpFreq2<0) {
                     jumpTime2--;
+                    creatureSprite2.setRotation(0);
                     if(isItInTheAir2) {
 
-                        creatureSprite2.setColor(Color.RED);
+                        creatureSprite2.setRotation(creatureSprite.getRotation()-20f);
                         isItInTheAir2 = false;
                         jumpFreq2 = 1;
 
                     }
-                    else{creatureSprite2.setColor(Color.WHITE);
+                    else{ creatureSprite2.setRotation(creatureSprite.getRotation()+20f);
 
                         isItInTheAir2 = true;
                         jumpFreq2 = 1;
@@ -2840,15 +2800,15 @@ public class Level1 extends ApplicationAdapter implements Screen {
                 if (brokenHingeContainer[crX2][crY2].x != 1000 &&
                         brokenHingeContainer[crX2][crY2].y != 1000) {
                     jumpTime++;
+                    creatureSprite2.setRotation(0);
                 }
 
 
                 else{
-
-
                     jumpTime2 = 9;
                     isItJumping2 = false;
 
+                    creatureSprite.setRotation(0);
 
                     breakBlockTimer2 = 6;
 
@@ -2879,14 +2839,13 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
             if (spawnTimer2 < 0) {
 
-                creatureSprite2.setAlpha(0);
+                creatureSprite2.setColor(0,0,0,0);
                 b2 = 1000;
                 creatureSprite2.setPosition(a2 - creatureSprite2.getWidth() / 2, b2);
 
-                creatureSprite2.setColor(Color.WHITE);
 
 
-                creatureSprite2.setAlpha(1);
+                creatureSprite2.setColor(1,1,1,1);
 
                 //System.out.println("spawnTimer  ="  + spawnTimer);
                 int locationx = 1;
@@ -2993,9 +2952,12 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
         if (controller.isUiElementsPressed()) {
             chosenState = 2;
-            controller.bombImg.setColor(Color.YELLOW);
-            controller.gearImg.setColor(1, 1, 1, 1);
+            controller.gearImg.setColor(1,1,1,1);
+
             controller.blowtorchImg.setColor(1,1,1,1);
+
+            controller.bombImg.setColor(Color.YELLOW);
+
             controller.crossHair.setColor(1,1,1,1);
 
 
@@ -3007,10 +2969,15 @@ public class Level1 extends ApplicationAdapter implements Screen {
         if(controller.isBlowtorchPressed()){
 
             chosenState= 3;
-            controller.blowtorchImg.setColor(Color.YELLOW);
+
             controller.gearImg.setColor(1,1,1,1);
-            controller.bombImg.setColor(1, 1, 1, 1);
+
+            controller.blowtorchImg.setColor(Color.YELLOW);
+
+            controller.bombImg.setColor(1,1,1,1);
+
             controller.crossHair.setColor(1,1,1,1);
+
 
 
             badsprite = new Sprite(blowtorcht);
@@ -3024,9 +2991,13 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
             chosenState = 1;
             controller.gearImg.setColor(Color.YELLOW);
-            controller.bombImg.setColor(1, 1, 1, 1);
+
             controller.blowtorchImg.setColor(1,1,1,1);
+
+            controller.bombImg.setColor(1,1,1,1);
+
             controller.crossHair.setColor(1,1,1,1);
+
 
 
 
@@ -3051,10 +3022,14 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
         if (controller.isCrosshairPressed()) {
             chosenState = 4;
-            controller.crossHair.setColor(Color.YELLOW);
+
             controller.gearImg.setColor(1, 1, 1, 1);
+
             controller.blowtorchImg.setColor(1,1,1,1);
+
             controller.bombImg.setColor(1,1,1,1);
+
+            controller.crossHair.setColor(Color.YELLOW);
 
             badsprite = new Sprite(crossHair);
 
@@ -3135,8 +3110,6 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
         if (controller.isButtonPressed() && commenceCounter<1) {
 
-            checkTimer =-1;
-            checkTimer2 = -1;
             if (brokenHingeContainer[moveX][moveY].x == 1000) {
                 if (chosenState == 1) {
 
@@ -3224,7 +3197,6 @@ public class Level1 extends ApplicationAdapter implements Screen {
                             if (rand == 1) {
 
 
-
                                 forbid.forbidList(moveX, moveY, 1, moveX, moveY, 1);
                                 forbid.forbidList(moveX, moveY, 2, moveX, moveY, 2);
                                 forbid.forbidList(moveX, moveY, 3, moveX, moveY, 3);
@@ -3241,8 +3213,6 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
                             }
                             if (rand == 2) {
-
-
 
 
                                 forbid.forbidList(moveX, moveY, 1, moveX, moveY, 1);
@@ -3291,9 +3261,6 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
                             }
                             if (rand == 3) {
-
-
-
 
 
                                 forbid.forbidList(moveX, moveY, 1, moveX, moveY, 1);
@@ -3362,14 +3329,53 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
                             if (rand == 1) {
                                 sprite = new Sprite(kucuk1);
+                                Random intRandom = new Random();
+                                int colorCode = intRandom.nextInt(5);
+                                if (colorCode == 0) {
+                                    sprite.setColor(205f / 255f, 0, 120f / 255f, 1);
+                                } else if (colorCode == 1) {
+                                    sprite.setColor(5f / 255f, 255 / 255f, 251f / 255f, 1);
+                                } else if (colorCode == 2) {
+                                    sprite.setColor(5f / 255f, 255 / 255f, 38f / 255f, 1);
+                                } else if (colorCode == 3) {
+                                    sprite.setColor(255 / 255f, 158 / 255f, 84f / 255f, 1);
+                                } else {
+                                    sprite.setColor(255f / 255f, 128 / 255f, 85f / 255f, 1);
+                                }
                                 sprite.setSize(5.5f, 5.5f);
                             }
                             if (rand == 2) {
                                 sprite = new Sprite(orta1);
+                                Random intRandom = new Random();
+                                int colorCode = intRandom.nextInt(5);
+                                if (colorCode == 0) {
+                                    sprite.setColor(205f / 255f, 0, 120f / 255f, 1);
+                                } else if (colorCode == 1) {
+                                    sprite.setColor(5f / 255f, 255 / 255f, 251f / 255f, 1);
+                                } else if (colorCode == 2) {
+                                    sprite.setColor(5f / 255f, 255 / 255f, 38f / 255f, 1);
+                                } else if (colorCode == 3) {
+                                    sprite.setColor(255 / 255f, 158 / 255f, 84f / 255f, 1);
+                                } else {
+                                    sprite.setColor(255f / 255f, 128 / 255f, 85f / 255f, 1);
+                                }
                                 sprite.setSize(10.8f, 10.8f);
                             }
                             if (rand == 3) {
                                 sprite = new Sprite(buyuk1);
+                                Random intRandom = new Random();
+                                int colorCode = intRandom.nextInt(5);
+                                if (colorCode == 0) {
+                                    sprite.setColor(205f / 255f, 0, 120f / 255f, 1);
+                                } else if (colorCode == 1) {
+                                    sprite.setColor(5f / 255f, 255 / 255f, 251f / 255f, 1);
+                                } else if (colorCode == 2) {
+                                    sprite.setColor(5f / 255f, 255 / 255f, 38f / 255f, 1);
+                                } else if (colorCode == 3) {
+                                    sprite.setColor(255 / 255f, 158 / 255f, 84f / 255f, 1);
+                                } else {
+                                    sprite.setColor(255f / 255f, 128 / 255f, 85f / 255f, 1);
+                                }
                                 sprite.setSize(16f, 16f);
                             }
 
@@ -3380,13 +3386,12 @@ public class Level1 extends ApplicationAdapter implements Screen {
                             spriteArray[moveX][moveY][0] = new Vector3(pointCoordinates[moveX][moveY].x, pointCoordinates[moveX][moveY].y, rand);
 
 
-                            if (chestSprite.getColor().a >0 && chestSprite.getX()!=0 && chestSprite.getY()!=0 && chestSprite.getBoundingRectangle().overlaps(spriteContainer[moveX][moveY].getBoundingRectangle())) {
+                            if (chestSprite.getColor().a > 0 && chestSprite.getX() != 0 && chestSprite.getY() != 0 && chestSprite.getBoundingRectangle().overlaps(spriteContainer[moveX][moveY].getBoundingRectangle())) {
 
                                 crateGot = false;
                                 explosionBool = true;
 
                                 crateHad = true;
-
 
 
                                 System.out.println(prefs.getInteger("chest") + "Chest");
@@ -3395,9 +3400,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
                             }
 
 
-
-
-                            if (creatureSprite.getBoundingRectangle().overlaps(spriteContainer[moveX][moveY].getBoundingRectangle())) {
+                            if (rec1.overlaps(spriteContainer[moveX][moveY].getBoundingRectangle())) {
 
 
                                 isItJumping = false;
@@ -3416,7 +3419,7 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
                             }
 
-                            if (creatureSprite2.getBoundingRectangle().overlaps(spriteContainer[moveX][moveY].getBoundingRectangle())) {
+                            if (rec2.overlaps(spriteContainer[moveX][moveY].getBoundingRectangle())) {
                                 isItJumping2 = false;
                                 isItInTheAir2 = false;
                                 creatureSpawnBoolean2 = true;
@@ -3434,25 +3437,23 @@ public class Level1 extends ApplicationAdapter implements Screen {
                             }
 
 
-
-
                             rand = VariableCalls.prevRand;
                             VariableCalls.prevRand = randomizer.randomize();
 
                             if (VariableCalls.prevRand == 1) {
                                 nextGear = new Image(kucuk1);
 
-                                nextGear.setSize(5.5f, 5.5f);
+                                nextGear.setSize(5.5f * 2f, 5.5f * 2f);
                             }
                             if (VariableCalls.prevRand == 2) {
                                 nextGear = new Image(orta1);
 
-                                nextGear.setSize(10.8f, 10.8f);
+                                nextGear.setSize(10.8f * 2, 10.8f * 2);
                             }
                             if (VariableCalls.prevRand == 3) {
                                 nextGear = new Image(buyuk1);
 
-                                nextGear.setSize(16f, 16f);
+                                nextGear.setSize(16f * 2, 16f * 2);
                             }
 
                             nextGear.setPosition(15 - nextGear.getWidth() / 2, VariableCalls.WORLD_HEIGHT - 15 - nextGear.getHeight() / 2);
@@ -3483,484 +3484,2836 @@ public class Level1 extends ApplicationAdapter implements Screen {
                 }
 
                 if (chosenState == 2 && bombAmount >= 1) {
-                    if (VariableCalls.buttonCheck && spriteContainer[moveX][moveY] != null && spriteContainer[moveX][moveY] != spriteContainer[starterX][starterY] && spriteContainer[moveX][moveY] != spriteContainer[goalStarterX][goalStarterY]) {
-                        prefs.putInteger("bomb", bombAmount - 1);
-                        bombAmount -= 1;
-                        checkTimer =-1;
-                        checkTimer2 = -1;
 
-                        prefs.flush();
+                    int a =goalStarter.size();
+                    switch (a) {
 
-                        controller.bombCount.setText(String.valueOf(bombAmount));
-                        explosionBool = true;
+                        case 1: {
+                            if (VariableCalls.buttonCheck && spriteContainer[moveX][moveY] != null && spriteContainer[moveX][moveY] != spriteContainer[starterX][starterY] && spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(0).x][(int)goalStarter.get(0).y])
+                            {
+                                prefs.putInteger("bomb", bombAmount - 1);
+                                bombAmount -= 1;
 
-                        if (spriteContainer[moveX][moveY] != null) {
 
-                            spriteContainer[moveX][moveY] = null;
+                                prefs.flush();
 
-                            int forbidIndex = (int) spriteArray[moveX][moveY][0].z;
+                                controller.bombCount.setText(String.valueOf(bombAmount));
+                                explosionBool = true;
 
-                            if (forbidIndex == 1) {
-                                if (moveX + 1 < world_dotx_count)
-                                    aList.allowedListDelete(moveX + 1, moveY, 2);
-                                if (moveY + 1 < world_doty_count)
-                                    aList.allowedListDelete(moveX, moveY + 1, 2);
-                                if (moveX - 1 >= 0)
-                                    aList.allowedListDelete(moveX - 1, moveY, 2);
+                                if (spriteContainer[moveX][moveY] != null) {
 
-                                if (moveY - 1 >= 0)
-                                    aList.allowedListDelete(moveX, moveY - 1, 2);
+                                    spriteContainer[moveX][moveY] = null;
 
+                                    int forbidIndex = (int) spriteArray[moveX][moveY][0].z;
 
-                                if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
-                                    aList.allowedListDelete(moveX + 1, moveY + 1, 3);
-                                if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
-                                    aList.allowedListDelete(moveX - 1, moveY + 1, 3);
-                                if (moveX - 1 >= 0 && moveY - 1 >= 0)
-                                    aList.allowedListDelete(moveX - 1, moveY - 1, 3);
+                                    if (forbidIndex == 1) {
+                                        if (moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY, 2);
+                                        if (moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 1, 2);
+                                        if (moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY, 2);
 
-                                if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
-                                    aList.allowedListDelete(moveX + 1, moveY - 1, 3);
+                                        if (moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 1, 2);
 
 
-                            }
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 3);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 3);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 3);
 
-                            if (forbidIndex == 2) {
-
-                                if (moveX + 1 < world_dotx_count)
-                                    aList.allowedListDelete(moveX + 1, moveY, 1);
-                                if (moveY + 1 < world_doty_count)
-                                    aList.allowedListDelete(moveX, moveY + 1, 1);
-                                if (moveX - 1 >= 0)
-                                    aList.allowedListDelete(moveX - 1, moveY, 1);
-
-                                if (moveY - 1 >= 0)
-                                    aList.allowedListDelete(moveX, moveY - 1, 1);
-
-
-                                if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
-                                    aList.allowedListDelete(moveX + 1, moveY + 1, 2);
-                                if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
-                                    aList.allowedListDelete(moveX - 1, moveY + 1, 2);
-                                if (moveX - 1 >= 0 && moveY - 1 >= 0)
-                                    aList.allowedListDelete(moveX - 1, moveY - 1, 2);
-
-                                if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
-                                    aList.allowedListDelete(moveX + 1, moveY - 1, 2);
-
-
-                            }
-
-                            if (forbidIndex == 3) {
-                                if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
-                                    aList.allowedListDelete(moveX + 1, moveY + 1, 1);
-                                if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
-                                    aList.allowedListDelete(moveX - 1, moveY + 1, 1);
-                                if (moveX - 1 >= 0 && moveY - 1 >= 0)
-                                    aList.allowedListDelete(moveX - 1, moveY - 1, 1);
-
-                                if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
-                                    aList.allowedListDelete(moveX + 1, moveY - 1, 1);
-
-
-                                if (moveX + 2 < world_dotx_count)
-                                    aList.allowedListDelete(moveX + 2, moveY, 3);
-
-                                if (moveX - 2 >= 0)
-                                    aList.allowedListDelete(moveX - 2, moveY, 3);
-
-                                if (moveY - 2 >= 0)
-                                    aList.allowedListDelete(moveX, moveY - 2, 3);
-
-                                if (moveY + 2 < world_doty_count)
-                                    aList.allowedListDelete(moveX, moveY + 2, 3);
-
-
-                            }
-
-
-                            if (forbidIndex == 1) {
-                                forbid.forbidListDelete(moveX, moveY, 1);
-                                forbid.forbidListDelete(moveX, moveY, 2);
-                                forbid.forbidListDelete(moveX, moveY, 3);
-
-                                if (moveX + 1 < world_dotx_count)
-                                    forbid.forbidListDelete(moveX + 1, moveY, 3);
-                                if (moveY + 1 < world_doty_count)
-                                    forbid.forbidListDelete(moveX, moveY + 1, 3);
-                                if (moveX - 1 >= 0)
-                                    forbid.forbidListDelete(moveX - 1, moveY, 3);
-                                if (moveY - 1 >= 0)
-                                    forbid.forbidListDelete(moveX, moveY - 1, 3);
-
-
-                            }
-                            if (forbidIndex == 2) {
-                                forbid.forbidListDelete(moveX, moveY, 1);
-                                forbid.forbidListDelete(moveX, moveY, 2);
-                                forbid.forbidListDelete(moveX, moveY, 3);
-
-                                if (moveX + 1 < world_dotx_count)
-                                    forbid.forbidListDelete(moveX + 1, moveY, 2);
-                                if (moveY + 1 < world_doty_count)
-                                    forbid.forbidListDelete(moveX, moveY + 1, 2);
-                                if (moveX - 1 >= 0)
-                                    forbid.forbidListDelete(moveX - 1, moveY, 2);
-                                if (moveY - 1 >= 0)
-                                    forbid.forbidListDelete(moveX, moveY - 1, 2);
-
-                                if (moveX + 1 < world_dotx_count)
-                                    forbid.forbidListDelete(moveX + 1, moveY, 3);
-                                if (moveY + 1 < world_doty_count)
-                                    forbid.forbidListDelete(moveX, moveY + 1, 3);
-                                if (moveX - 1 >= 0)
-                                    forbid.forbidListDelete(moveX - 1, moveY, 3);
-                                if (moveY - 1 >= 0)
-                                    forbid.forbidListDelete(moveX, moveY - 1, 3);
-
-                                if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
-                                    forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
-
-
-                                }
-
-                                if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
-                                    forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
-
-                                }
-
-                                if (moveX - 1 >= 0 && moveY - 1 >= 0) {
-                                    forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
-
-                                }
-
-                                if (moveY - 1 >= 0 && moveX < world_dotx_count) {
-                                    forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
-
-                                }
-
-
-                            }
-                            if (forbidIndex == 3) {
-                                forbid.forbidListDelete(moveX, moveY, 1);
-                                forbid.forbidListDelete(moveX, moveY, 2);
-                                forbid.forbidListDelete(moveX, moveY, 3);
-
-                                if (moveX + 1 < world_dotx_count) {
-                                    forbid.forbidListDelete(moveX + 1, moveY, 1);
-                                    forbid.forbidListDelete(moveX + 1, moveY, 2);
-                                    forbid.forbidListDelete(moveX + 1, moveY, 3);
-
-
-                                }
-
-                                if (moveY + 1 < world_doty_count) {
-                                    forbid.forbidListDelete(moveX, moveY + 1, 1);
-                                    forbid.forbidListDelete(moveX, moveY + 1, 2);
-                                    forbid.forbidListDelete(moveX, moveY + 1, 3);
-
-                                }
-
-                                if (moveX - 1 >= 0) {
-                                    forbid.forbidListDelete(moveX - 1, moveY, 1);
-                                    forbid.forbidListDelete(moveX - 1, moveY, 2);
-                                    forbid.forbidListDelete(moveX - 1, moveY, 3);
-
-                                }
-
-                                if (moveY - 1 >= 0) {
-                                    forbid.forbidListDelete(moveX, moveY - 1, 1);
-                                    forbid.forbidListDelete(moveX, moveY - 1, 2);
-                                    forbid.forbidListDelete(moveX, moveY - 1, 3);
-
-                                }
-
-
-                                //LARGE CROSSES
-
-
-                                if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
-                                    forbid.forbidListDelete(moveX + 1, moveY + 1, 2);
-                                    forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
-
-
-                                }
-
-                                if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
-                                    forbid.forbidListDelete(moveX - 1, moveY + 1, 2);
-                                    forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
-
-                                }
-
-                                if (moveX - 1 >= 0 && moveY - 1 >= 0) {
-                                    forbid.forbidListDelete(moveX - 1, moveY - 1, 2);
-                                    forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
-
-                                }
-
-                                if (moveY - 1 >= 0 && moveX < world_dotx_count) {
-                                    forbid.forbidListDelete(moveX + 1, moveY - 1, 2);
-                                    forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
-
-                                }
-                            }
-
-                            if (!isThisRolling[moveX][moveY])
-                                isThisRolling[moveX][moveY] = true;
-
-                            for (int forbiddenRefreshX = 0; forbiddenRefreshX < world_dotx_count; forbiddenRefreshX++) {
-                                for (int forbiddenRefreshY = 0; forbiddenRefreshY < world_doty_count; forbiddenRefreshY++) {
-
-                                    if (spriteContainer[forbiddenRefreshX][forbiddenRefreshY] != null) {
-
-                                        float gearType = spriteArray[forbiddenRefreshX][forbiddenRefreshY][0].z;
-
-
-                                        if (gearType == 1) {
-
-
-                                            forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
-                                            forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
-                                            forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
-
-                                            if (forbiddenRefreshX + 1 < world_dotx_count)
-                                                forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
-                                            if (forbiddenRefreshY + 1 < world_doty_count)
-                                                forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
-                                            if (forbiddenRefreshX - 1 >= 0)
-                                                forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
-                                            if (forbiddenRefreshY - 1 >= 0)
-                                                forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
-
-
-                                            if (forbiddenRefreshX + 1 < world_dotx_count)
-                                                aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
-                                            if (forbiddenRefreshY + 1 < world_doty_count)
-                                                aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
-                                            if (forbiddenRefreshX - 1 >= 0)
-                                                aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
-
-                                            if (forbiddenRefreshY - 1 >= 0)
-                                                aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
-
-
-                                            if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
-                                                aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
-                                            if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
-                                                aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
-                                            if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
-                                                aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
-
-                                            if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
-                                                aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
-
-
-                                        }
-                                        if (gearType == 2) {
-
-
-
-
-                                            forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
-                                            forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
-                                            forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
-
-                                            if (forbiddenRefreshX + 1 < world_dotx_count)
-                                                forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
-                                            if (forbiddenRefreshY + 1 < world_doty_count)
-                                                forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
-                                            if (forbiddenRefreshX - 1 >= 0)
-                                                forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
-                                            if (forbiddenRefreshY - 1 >= 0)
-                                                forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
-
-                                            if (forbiddenRefreshX + 1 < world_dotx_count)
-                                                forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
-                                            if (forbiddenRefreshY + 1 < world_doty_count)
-                                                forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
-                                            if (forbiddenRefreshX - 1 >= 0)
-                                                forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
-                                            if (forbiddenRefreshY - 1 >= 0)
-                                                forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
-
-                                            if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
-                                                forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
-
-
-                                            }
-
-                                            if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
-                                                forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
-
-                                            }
-
-                                            if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
-                                                forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
-
-                                            }
-
-                                            if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
-                                                forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
-
-                                            }
-
-
-                                            if (forbiddenRefreshX + 1 < world_dotx_count)
-                                                aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
-                                            if (forbiddenRefreshY + 1 < world_doty_count)
-                                                aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
-                                            if (forbiddenRefreshX - 1 >= 0)
-                                                aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
-
-                                            if (forbiddenRefreshY - 1 >= 0)
-                                                aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
-
-
-                                            if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
-                                                aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
-                                            if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
-                                                aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
-                                            if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
-                                                aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
-
-                                            if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
-                                                aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
-
-
-                                        }
-                                        if (gearType == 3) {
-
-
-
-                                            forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
-                                            forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
-                                            forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
-
-                                            if (forbiddenRefreshX + 1 < world_dotx_count) {
-                                                forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
-                                                forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
-                                                forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
-
-
-                                            }
-
-                                            if (forbiddenRefreshY + 1 < world_doty_count) {
-                                                forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
-                                                forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
-                                                forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
-
-                                            }
-
-                                            if (forbiddenRefreshX - 1 >= 0) {
-                                                forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
-                                                forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
-                                                forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
-
-                                            }
-
-                                            if (forbiddenRefreshY - 1 >= 0) {
-                                                forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
-                                                forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
-                                                forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
-
-                                            }
-
-
-                                            //LARGE CROSSES
-
-
-                                            if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
-                                                forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
-                                                forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
-
-
-                                            }
-
-                                            if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
-                                                forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
-                                                forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
-
-                                            }
-
-                                            if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
-                                                forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
-                                                forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
-
-                                            }
-
-                                            if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
-                                                forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
-                                                forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
-
-                                            }
-
-
-                                            if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
-                                                aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1);
-                                            if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
-                                                aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1);
-                                            if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
-                                                aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1);
-
-                                            if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
-                                                aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1);
-
-
-                                            if (forbiddenRefreshX + 2 < world_dotx_count)
-                                                aList.allowedList(forbiddenRefreshX + 2, forbiddenRefreshY, 3, forbiddenRefreshX + 2, forbiddenRefreshY, 3);
-                                            if (forbiddenRefreshX - 2 >= 0)
-                                                aList.allowedList(forbiddenRefreshX - 2, forbiddenRefreshY, 3, forbiddenRefreshX - 2, forbiddenRefreshY, 3);
-                                            if (forbiddenRefreshY - 2 >= 0)
-                                                aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 2, 3, forbiddenRefreshX, forbiddenRefreshY - 2, 3);
-
-                                            if (forbiddenRefreshY + 2 < world_doty_count)
-                                                aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 2, 3, forbiddenRefreshX, forbiddenRefreshY + 2, 3);
-                                        }
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 3);
 
 
                                     }
 
-                                }
-                            }
+                                    if (forbidIndex == 2) {
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY, 1);
+                                        if (moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 1, 1);
+                                        if (moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY, 1);
+
+                                        if (moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 1, 1);
 
 
-                            for (int rotateCheckX = 0; rotateCheckX < world_dotx_count; rotateCheckX++) {
-                                for (int rotateChecky = 0; rotateChecky < world_doty_count; rotateChecky++) {
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 2);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 2);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 2);
 
-                                    isItRotating[rotateCheckX][rotateChecky].x = 0;
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 2);
 
-
-
-                                }
-                            }
-
-
-                            for (int stuckListX = 0; stuckListX < world_dotx_count; stuckListX++) {
-                                for (int stuckListY = 0; stuckListY < world_doty_count; stuckListY++) {
-                                    for (int stuckListZ = 0; stuckListZ < 24; stuckListZ++) {
-
-                                        stuckCheckList[stuckListX][stuckListY][stuckListZ].z = 0;
-                                        stuckArray[stuckListX][stuckListY][stuckListZ].z = 0;
 
                                     }
+
+                                    if (forbidIndex == 3) {
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 1);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 1);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 1);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 1);
+
+
+                                        if (moveX + 2 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 2, moveY, 3);
+
+                                        if (moveX - 2 >= 0)
+                                            aList.allowedListDelete(moveX - 2, moveY, 3);
+
+                                        if (moveY - 2 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 2, 3);
+
+                                        if (moveY + 2 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 2, 3);
+
+
+                                    }
+
+
+                                    if (forbidIndex == 1) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+
+                                    }
+                                    if (forbidIndex == 2) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 2);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 2);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 2);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 2);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0 && moveX < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
+
+                                        }
+
+
+                                    }
+                                    if (forbidIndex == 3) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY, 1);
+                                            forbid.forbidListDelete(moveX + 1, moveY, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX, moveY + 1, 1);
+                                            forbid.forbidListDelete(moveX, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY, 1);
+                                            forbid.forbidListDelete(moveX - 1, moveY, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX, moveY - 1, 1);
+                                            forbid.forbidListDelete(moveX, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+                                        }
+
+
+                                        //LARGE CROSSES
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0 && moveX < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
+
+                                        }
+                                    }
+
+                                    if (!isThisRolling[moveX][moveY])
+                                        isThisRolling[moveX][moveY] = true;
+
+                                    for (int forbiddenRefreshX = 0; forbiddenRefreshX < world_dotx_count; forbiddenRefreshX++) {
+                                        for (int forbiddenRefreshY = 0; forbiddenRefreshY < world_doty_count; forbiddenRefreshY++) {
+
+                                            if (spriteContainer[forbiddenRefreshX][forbiddenRefreshY] != null) {
+
+                                                float gearType = spriteArray[forbiddenRefreshX][forbiddenRefreshY][0].z;
+
+
+                                                if (gearType == 1) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+
+                                                }
+                                                if (gearType == 2) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
+
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
+
+
+                                                }
+                                                if (gearType == 3) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    //LARGE CROSSES
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1);
+
+
+                                                    if (forbiddenRefreshX + 2 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 2, forbiddenRefreshY, 3, forbiddenRefreshX + 2, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshX - 2 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 2, forbiddenRefreshY, 3, forbiddenRefreshX - 2, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 2 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 2, 3, forbiddenRefreshX, forbiddenRefreshY - 2, 3);
+
+                                                    if (forbiddenRefreshY + 2 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 2, 3, forbiddenRefreshX, forbiddenRefreshY + 2, 3);
+                                                }
+
+
+                                            }
+
+                                        }
+                                    }
+
+
+                                    for (int rotateCheckX = 0; rotateCheckX < world_dotx_count; rotateCheckX++) {
+                                        for (int rotateChecky = 0; rotateChecky < world_doty_count; rotateChecky++) {
+
+                                            isItRotating[rotateCheckX][rotateChecky].x = 0;
+
+
+                                        }
+                                    }
+
+
+                                    for (int stuckListX = 0; stuckListX < world_dotx_count; stuckListX++) {
+                                        for (int stuckListY = 0; stuckListY < world_doty_count; stuckListY++) {
+                                            for (int stuckListZ = 0; stuckListZ < 24; stuckListZ++) {
+
+                                                stuckCheckList[stuckListX][stuckListY][stuckListZ].z = 0;
+                                                stuckArray[stuckListX][stuckListY][stuckListZ].z = 0;
+                                            }
+                                        }
+                                    }
+                                    stuckCheck = false;
+                                    isItRotating[0][0].x = 1;
+                                    spriteArray[moveX][moveY][0].z = 0;
+
+
                                 }
+                                VariableCalls.buttonCheck = false;
                             }
-                            stuckCheck = false;
-                            isItRotating[starterX][starterY].x = 1;
-                            spriteArray[moveX][moveY][0].z = 0;
-                            checkTimer =-1;
-                            checkTimer2 = -1;
 
-
+                            break;
                         }
-                        VariableCalls.buttonCheck = false;
-                    }
-                }
+                        case 2: {
+                            if (VariableCalls.buttonCheck && spriteContainer[moveX][moveY] != null && spriteContainer[moveX][moveY] != spriteContainer[starterX][starterY] && spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(0).x][(int)goalStarter.get(0).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(1).x][(int)goalStarter.get(1).y])
+                            {
+                                prefs.putInteger("bomb", bombAmount - 1);
+                                bombAmount -= 1;
 
+
+                                prefs.flush();
+
+                                controller.bombCount.setText(String.valueOf(bombAmount));
+                                explosionBool = true;
+
+                                if (spriteContainer[moveX][moveY] != null) {
+
+                                    spriteContainer[moveX][moveY] = null;
+
+                                    int forbidIndex = (int) spriteArray[moveX][moveY][0].z;
+
+                                    if (forbidIndex == 1) {
+                                        if (moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY, 2);
+                                        if (moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 1, 2);
+                                        if (moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY, 2);
+
+                                        if (moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 1, 2);
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 3);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 3);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 3);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 3);
+
+
+                                    }
+
+                                    if (forbidIndex == 2) {
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY, 1);
+                                        if (moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 1, 1);
+                                        if (moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY, 1);
+
+                                        if (moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 1, 1);
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 2);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 2);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 2);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 2);
+
+
+                                    }
+
+                                    if (forbidIndex == 3) {
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 1);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 1);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 1);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 1);
+
+
+                                        if (moveX + 2 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 2, moveY, 3);
+
+                                        if (moveX - 2 >= 0)
+                                            aList.allowedListDelete(moveX - 2, moveY, 3);
+
+                                        if (moveY - 2 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 2, 3);
+
+                                        if (moveY + 2 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 2, 3);
+
+
+                                    }
+
+
+                                    if (forbidIndex == 1) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+
+                                    }
+                                    if (forbidIndex == 2) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 2);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 2);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 2);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 2);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0 && moveX < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
+
+                                        }
+
+
+                                    }
+                                    if (forbidIndex == 3) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY, 1);
+                                            forbid.forbidListDelete(moveX + 1, moveY, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX, moveY + 1, 1);
+                                            forbid.forbidListDelete(moveX, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY, 1);
+                                            forbid.forbidListDelete(moveX - 1, moveY, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX, moveY - 1, 1);
+                                            forbid.forbidListDelete(moveX, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+                                        }
+
+
+                                        //LARGE CROSSES
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0 && moveX < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
+
+                                        }
+                                    }
+
+                                    if (!isThisRolling[moveX][moveY])
+                                        isThisRolling[moveX][moveY] = true;
+
+                                    for (int forbiddenRefreshX = 0; forbiddenRefreshX < world_dotx_count; forbiddenRefreshX++) {
+                                        for (int forbiddenRefreshY = 0; forbiddenRefreshY < world_doty_count; forbiddenRefreshY++) {
+
+                                            if (spriteContainer[forbiddenRefreshX][forbiddenRefreshY] != null) {
+
+                                                float gearType = spriteArray[forbiddenRefreshX][forbiddenRefreshY][0].z;
+
+
+                                                if (gearType == 1) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+
+                                                }
+                                                if (gearType == 2) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
+
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
+
+
+                                                }
+                                                if (gearType == 3) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    //LARGE CROSSES
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1);
+
+
+                                                    if (forbiddenRefreshX + 2 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 2, forbiddenRefreshY, 3, forbiddenRefreshX + 2, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshX - 2 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 2, forbiddenRefreshY, 3, forbiddenRefreshX - 2, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 2 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 2, 3, forbiddenRefreshX, forbiddenRefreshY - 2, 3);
+
+                                                    if (forbiddenRefreshY + 2 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 2, 3, forbiddenRefreshX, forbiddenRefreshY + 2, 3);
+                                                }
+
+
+                                            }
+
+                                        }
+                                    }
+
+
+                                    for (int rotateCheckX = 0; rotateCheckX < world_dotx_count; rotateCheckX++) {
+                                        for (int rotateChecky = 0; rotateChecky < world_doty_count; rotateChecky++) {
+
+                                            isItRotating[rotateCheckX][rotateChecky].x = 0;
+
+
+                                        }
+                                    }
+
+
+                                    for (int stuckListX = 0; stuckListX < world_dotx_count; stuckListX++) {
+                                        for (int stuckListY = 0; stuckListY < world_doty_count; stuckListY++) {
+                                            for (int stuckListZ = 0; stuckListZ < 24; stuckListZ++) {
+
+                                                stuckCheckList[stuckListX][stuckListY][stuckListZ].z = 0;
+                                                stuckArray[stuckListX][stuckListY][stuckListZ].z = 0;
+                                            }
+                                        }
+                                    }
+                                    stuckCheck = false;
+                                    isItRotating[0][0].x = 1;
+                                    spriteArray[moveX][moveY][0].z = 0;
+
+
+                                }
+                                VariableCalls.buttonCheck = false;
+                            }
+
+                            break;
+                        }
+                        case 3: {
+                            if (VariableCalls.buttonCheck && spriteContainer[moveX][moveY] != null && spriteContainer[moveX][moveY] != spriteContainer[starterX][starterY]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(0).x][(int)goalStarter.get(0).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(1).x][(int)goalStarter.get(1).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(2).x][(int)goalStarter.get(2).y])
+                            {
+                                prefs.putInteger("bomb", bombAmount - 1);
+                                bombAmount -= 1;
+
+
+                                prefs.flush();
+
+                                controller.bombCount.setText(String.valueOf(bombAmount));
+                                explosionBool = true;
+
+                                if (spriteContainer[moveX][moveY] != null) {
+
+                                    spriteContainer[moveX][moveY] = null;
+
+                                    int forbidIndex = (int) spriteArray[moveX][moveY][0].z;
+
+                                    if (forbidIndex == 1) {
+                                        if (moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY, 2);
+                                        if (moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 1, 2);
+                                        if (moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY, 2);
+
+                                        if (moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 1, 2);
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 3);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 3);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 3);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 3);
+
+
+                                    }
+
+                                    if (forbidIndex == 2) {
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY, 1);
+                                        if (moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 1, 1);
+                                        if (moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY, 1);
+
+                                        if (moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 1, 1);
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 2);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 2);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 2);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 2);
+
+
+                                    }
+
+                                    if (forbidIndex == 3) {
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 1);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 1);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 1);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 1);
+
+
+                                        if (moveX + 2 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 2, moveY, 3);
+
+                                        if (moveX - 2 >= 0)
+                                            aList.allowedListDelete(moveX - 2, moveY, 3);
+
+                                        if (moveY - 2 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 2, 3);
+
+                                        if (moveY + 2 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 2, 3);
+
+
+                                    }
+
+
+                                    if (forbidIndex == 1) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+
+                                    }
+                                    if (forbidIndex == 2) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 2);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 2);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 2);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 2);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0 && moveX < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
+
+                                        }
+
+
+                                    }
+                                    if (forbidIndex == 3) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY, 1);
+                                            forbid.forbidListDelete(moveX + 1, moveY, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX, moveY + 1, 1);
+                                            forbid.forbidListDelete(moveX, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY, 1);
+                                            forbid.forbidListDelete(moveX - 1, moveY, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX, moveY - 1, 1);
+                                            forbid.forbidListDelete(moveX, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+                                        }
+
+
+                                        //LARGE CROSSES
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0 && moveX < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
+
+                                        }
+                                    }
+
+                                    if (!isThisRolling[moveX][moveY])
+                                        isThisRolling[moveX][moveY] = true;
+
+                                    for (int forbiddenRefreshX = 0; forbiddenRefreshX < world_dotx_count; forbiddenRefreshX++) {
+                                        for (int forbiddenRefreshY = 0; forbiddenRefreshY < world_doty_count; forbiddenRefreshY++) {
+
+                                            if (spriteContainer[forbiddenRefreshX][forbiddenRefreshY] != null) {
+
+                                                float gearType = spriteArray[forbiddenRefreshX][forbiddenRefreshY][0].z;
+
+
+                                                if (gearType == 1) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+
+                                                }
+                                                if (gearType == 2) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
+
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
+
+
+                                                }
+                                                if (gearType == 3) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    //LARGE CROSSES
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1);
+
+
+                                                    if (forbiddenRefreshX + 2 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 2, forbiddenRefreshY, 3, forbiddenRefreshX + 2, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshX - 2 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 2, forbiddenRefreshY, 3, forbiddenRefreshX - 2, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 2 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 2, 3, forbiddenRefreshX, forbiddenRefreshY - 2, 3);
+
+                                                    if (forbiddenRefreshY + 2 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 2, 3, forbiddenRefreshX, forbiddenRefreshY + 2, 3);
+                                                }
+
+
+                                            }
+
+                                        }
+                                    }
+
+
+                                    for (int rotateCheckX = 0; rotateCheckX < world_dotx_count; rotateCheckX++) {
+                                        for (int rotateChecky = 0; rotateChecky < world_doty_count; rotateChecky++) {
+
+                                            isItRotating[rotateCheckX][rotateChecky].x = 0;
+
+
+                                        }
+                                    }
+
+
+                                    for (int stuckListX = 0; stuckListX < world_dotx_count; stuckListX++) {
+                                        for (int stuckListY = 0; stuckListY < world_doty_count; stuckListY++) {
+                                            for (int stuckListZ = 0; stuckListZ < 24; stuckListZ++) {
+
+                                                stuckCheckList[stuckListX][stuckListY][stuckListZ].z = 0;
+                                                stuckArray[stuckListX][stuckListY][stuckListZ].z = 0;
+                                            }
+                                        }
+                                    }
+                                    stuckCheck = false;
+                                    isItRotating[0][0].x = 1;
+                                    spriteArray[moveX][moveY][0].z = 0;
+
+
+                                }
+                                VariableCalls.buttonCheck = false;
+                            }
+
+                            break;
+                        }
+                        case 4: {
+                            if (VariableCalls.buttonCheck && spriteContainer[moveX][moveY] != null && spriteContainer[moveX][moveY] != spriteContainer[starterX][starterY] &&  spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(0).x][(int)goalStarter.get(0).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(1).x][(int)goalStarter.get(1).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(2).x][(int)goalStarter.get(2).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(3).x][(int)goalStarter.get(3).y])
+                            {
+                                prefs.putInteger("bomb", bombAmount - 1);
+                                bombAmount -= 1;
+
+
+                                prefs.flush();
+
+                                controller.bombCount.setText(String.valueOf(bombAmount));
+                                explosionBool = true;
+
+                                if (spriteContainer[moveX][moveY] != null) {
+
+                                    spriteContainer[moveX][moveY] = null;
+
+                                    int forbidIndex = (int) spriteArray[moveX][moveY][0].z;
+
+                                    if (forbidIndex == 1) {
+                                        if (moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY, 2);
+                                        if (moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 1, 2);
+                                        if (moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY, 2);
+
+                                        if (moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 1, 2);
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 3);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 3);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 3);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 3);
+
+
+                                    }
+
+                                    if (forbidIndex == 2) {
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY, 1);
+                                        if (moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 1, 1);
+                                        if (moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY, 1);
+
+                                        if (moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 1, 1);
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 2);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 2);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 2);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 2);
+
+
+                                    }
+
+                                    if (forbidIndex == 3) {
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 1);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 1);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 1);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 1);
+
+
+                                        if (moveX + 2 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 2, moveY, 3);
+
+                                        if (moveX - 2 >= 0)
+                                            aList.allowedListDelete(moveX - 2, moveY, 3);
+
+                                        if (moveY - 2 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 2, 3);
+
+                                        if (moveY + 2 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 2, 3);
+
+
+                                    }
+
+
+                                    if (forbidIndex == 1) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+
+                                    }
+                                    if (forbidIndex == 2) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 2);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 2);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 2);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 2);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0 && moveX < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
+
+                                        }
+
+
+                                    }
+                                    if (forbidIndex == 3) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY, 1);
+                                            forbid.forbidListDelete(moveX + 1, moveY, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX, moveY + 1, 1);
+                                            forbid.forbidListDelete(moveX, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY, 1);
+                                            forbid.forbidListDelete(moveX - 1, moveY, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX, moveY - 1, 1);
+                                            forbid.forbidListDelete(moveX, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+                                        }
+
+
+                                        //LARGE CROSSES
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0 && moveX < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
+
+                                        }
+                                    }
+
+                                    if (!isThisRolling[moveX][moveY])
+                                        isThisRolling[moveX][moveY] = true;
+
+                                    for (int forbiddenRefreshX = 0; forbiddenRefreshX < world_dotx_count; forbiddenRefreshX++) {
+                                        for (int forbiddenRefreshY = 0; forbiddenRefreshY < world_doty_count; forbiddenRefreshY++) {
+
+                                            if (spriteContainer[forbiddenRefreshX][forbiddenRefreshY] != null) {
+
+                                                float gearType = spriteArray[forbiddenRefreshX][forbiddenRefreshY][0].z;
+
+
+                                                if (gearType == 1) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+
+                                                }
+                                                if (gearType == 2) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
+
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
+
+
+                                                }
+                                                if (gearType == 3) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    //LARGE CROSSES
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1);
+
+
+                                                    if (forbiddenRefreshX + 2 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 2, forbiddenRefreshY, 3, forbiddenRefreshX + 2, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshX - 2 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 2, forbiddenRefreshY, 3, forbiddenRefreshX - 2, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 2 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 2, 3, forbiddenRefreshX, forbiddenRefreshY - 2, 3);
+
+                                                    if (forbiddenRefreshY + 2 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 2, 3, forbiddenRefreshX, forbiddenRefreshY + 2, 3);
+                                                }
+
+
+                                            }
+
+                                        }
+                                    }
+
+
+                                    for (int rotateCheckX = 0; rotateCheckX < world_dotx_count; rotateCheckX++) {
+                                        for (int rotateChecky = 0; rotateChecky < world_doty_count; rotateChecky++) {
+
+                                            isItRotating[rotateCheckX][rotateChecky].x = 0;
+
+
+                                        }
+                                    }
+
+
+                                    for (int stuckListX = 0; stuckListX < world_dotx_count; stuckListX++) {
+                                        for (int stuckListY = 0; stuckListY < world_doty_count; stuckListY++) {
+                                            for (int stuckListZ = 0; stuckListZ < 24; stuckListZ++) {
+
+                                                stuckCheckList[stuckListX][stuckListY][stuckListZ].z = 0;
+                                                stuckArray[stuckListX][stuckListY][stuckListZ].z = 0;
+                                            }
+                                        }
+                                    }
+                                    stuckCheck = false;
+                                    isItRotating[0][0].x = 1;
+                                    spriteArray[moveX][moveY][0].z = 0;
+
+
+                                }
+                                VariableCalls.buttonCheck = false;
+                            }
+
+                            break;
+                        }
+                        case 5: {
+                            if (VariableCalls.buttonCheck && spriteContainer[moveX][moveY] != null && spriteContainer[moveX][moveY] != spriteContainer[starterX][starterY] &&  spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(0).x][(int)goalStarter.get(0).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(1).x][(int)goalStarter.get(1).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(2).x][(int)goalStarter.get(2).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(3).x][(int)goalStarter.get(3).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(4).x][(int)goalStarter.get(4).y])
+                            {
+                                prefs.putInteger("bomb", bombAmount - 1);
+                                bombAmount -= 1;
+
+
+                                prefs.flush();
+
+                                controller.bombCount.setText(String.valueOf(bombAmount));
+                                explosionBool = true;
+
+                                if (spriteContainer[moveX][moveY] != null) {
+
+                                    spriteContainer[moveX][moveY] = null;
+
+                                    int forbidIndex = (int) spriteArray[moveX][moveY][0].z;
+
+                                    if (forbidIndex == 1) {
+                                        if (moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY, 2);
+                                        if (moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 1, 2);
+                                        if (moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY, 2);
+
+                                        if (moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 1, 2);
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 3);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 3);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 3);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 3);
+
+
+                                    }
+
+                                    if (forbidIndex == 2) {
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY, 1);
+                                        if (moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 1, 1);
+                                        if (moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY, 1);
+
+                                        if (moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 1, 1);
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 2);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 2);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 2);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 2);
+
+
+                                    }
+
+                                    if (forbidIndex == 3) {
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 1);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 1);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 1);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 1);
+
+
+                                        if (moveX + 2 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 2, moveY, 3);
+
+                                        if (moveX - 2 >= 0)
+                                            aList.allowedListDelete(moveX - 2, moveY, 3);
+
+                                        if (moveY - 2 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 2, 3);
+
+                                        if (moveY + 2 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 2, 3);
+
+
+                                    }
+
+
+                                    if (forbidIndex == 1) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+
+                                    }
+                                    if (forbidIndex == 2) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 2);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 2);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 2);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 2);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0 && moveX < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
+
+                                        }
+
+
+                                    }
+                                    if (forbidIndex == 3) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY, 1);
+                                            forbid.forbidListDelete(moveX + 1, moveY, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX, moveY + 1, 1);
+                                            forbid.forbidListDelete(moveX, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY, 1);
+                                            forbid.forbidListDelete(moveX - 1, moveY, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX, moveY - 1, 1);
+                                            forbid.forbidListDelete(moveX, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+                                        }
+
+
+                                        //LARGE CROSSES
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0 && moveX < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
+
+                                        }
+                                    }
+
+                                    if (!isThisRolling[moveX][moveY])
+                                        isThisRolling[moveX][moveY] = true;
+
+                                    for (int forbiddenRefreshX = 0; forbiddenRefreshX < world_dotx_count; forbiddenRefreshX++) {
+                                        for (int forbiddenRefreshY = 0; forbiddenRefreshY < world_doty_count; forbiddenRefreshY++) {
+
+                                            if (spriteContainer[forbiddenRefreshX][forbiddenRefreshY] != null) {
+
+                                                float gearType = spriteArray[forbiddenRefreshX][forbiddenRefreshY][0].z;
+
+
+                                                if (gearType == 1) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+
+                                                }
+                                                if (gearType == 2) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
+
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
+
+
+                                                }
+                                                if (gearType == 3) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    //LARGE CROSSES
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1);
+
+
+                                                    if (forbiddenRefreshX + 2 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 2, forbiddenRefreshY, 3, forbiddenRefreshX + 2, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshX - 2 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 2, forbiddenRefreshY, 3, forbiddenRefreshX - 2, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 2 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 2, 3, forbiddenRefreshX, forbiddenRefreshY - 2, 3);
+
+                                                    if (forbiddenRefreshY + 2 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 2, 3, forbiddenRefreshX, forbiddenRefreshY + 2, 3);
+                                                }
+
+
+                                            }
+
+                                        }
+                                    }
+
+
+                                    for (int rotateCheckX = 0; rotateCheckX < world_dotx_count; rotateCheckX++) {
+                                        for (int rotateChecky = 0; rotateChecky < world_doty_count; rotateChecky++) {
+
+                                            isItRotating[rotateCheckX][rotateChecky].x = 0;
+
+
+                                        }
+                                    }
+
+
+                                    for (int stuckListX = 0; stuckListX < world_dotx_count; stuckListX++) {
+                                        for (int stuckListY = 0; stuckListY < world_doty_count; stuckListY++) {
+                                            for (int stuckListZ = 0; stuckListZ < 24; stuckListZ++) {
+
+                                                stuckCheckList[stuckListX][stuckListY][stuckListZ].z = 0;
+                                                stuckArray[stuckListX][stuckListY][stuckListZ].z = 0;
+                                            }
+                                        }
+                                    }
+                                    stuckCheck = false;
+                                    isItRotating[0][0].x = 1;
+                                    spriteArray[moveX][moveY][0].z = 0;
+
+
+                                }
+                                VariableCalls.buttonCheck = false;
+                            }
+
+                            break;
+                        }
+                        case 6: {
+                            if (VariableCalls.buttonCheck && spriteContainer[moveX][moveY] != null && spriteContainer[moveX][moveY] != spriteContainer[starterX][starterY] &&  spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(0).x][(int)goalStarter.get(0).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(1).x][(int)goalStarter.get(1).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(2).x][(int)goalStarter.get(2).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(3).x][(int)goalStarter.get(3).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(4).x][(int)goalStarter.get(4).y]&& spriteContainer[moveX][moveY] != spriteContainer[(int)goalStarter.get(5).x][(int)goalStarter.get(5).y])
+                            {
+                                prefs.putInteger("bomb", bombAmount - 1);
+                                bombAmount -= 1;
+
+
+                                prefs.flush();
+
+                                controller.bombCount.setText(String.valueOf(bombAmount));
+                                explosionBool = true;
+
+                                if (spriteContainer[moveX][moveY] != null) {
+
+                                    spriteContainer[moveX][moveY] = null;
+
+                                    int forbidIndex = (int) spriteArray[moveX][moveY][0].z;
+
+                                    if (forbidIndex == 1) {
+                                        if (moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY, 2);
+                                        if (moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 1, 2);
+                                        if (moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY, 2);
+
+                                        if (moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 1, 2);
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 3);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 3);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 3);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 3);
+
+
+                                    }
+
+                                    if (forbidIndex == 2) {
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY, 1);
+                                        if (moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 1, 1);
+                                        if (moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY, 1);
+
+                                        if (moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 1, 1);
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 2);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 2);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 2);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 2);
+
+
+                                    }
+
+                                    if (forbidIndex == 3) {
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count)
+                                            aList.allowedListDelete(moveX + 1, moveY + 1, 1);
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY + 1, 1);
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0)
+                                            aList.allowedListDelete(moveX - 1, moveY - 1, 1);
+
+                                        if (moveY - 1 >= 0 && moveX + 1 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 1, moveY - 1, 1);
+
+
+                                        if (moveX + 2 < world_dotx_count)
+                                            aList.allowedListDelete(moveX + 2, moveY, 3);
+
+                                        if (moveX - 2 >= 0)
+                                            aList.allowedListDelete(moveX - 2, moveY, 3);
+
+                                        if (moveY - 2 >= 0)
+                                            aList.allowedListDelete(moveX, moveY - 2, 3);
+
+                                        if (moveY + 2 < world_doty_count)
+                                            aList.allowedListDelete(moveX, moveY + 2, 3);
+
+
+                                    }
+
+
+                                    if (forbidIndex == 1) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+
+                                    }
+                                    if (forbidIndex == 2) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 2);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 2);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 2);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 2);
+
+                                        if (moveX + 1 < world_dotx_count)
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+                                        if (moveY + 1 < world_doty_count)
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+                                        if (moveX - 1 >= 0)
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+                                        if (moveY - 1 >= 0)
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0 && moveX < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
+
+                                        }
+
+
+                                    }
+                                    if (forbidIndex == 3) {
+                                        forbid.forbidListDelete(moveX, moveY, 1);
+                                        forbid.forbidListDelete(moveX, moveY, 2);
+                                        forbid.forbidListDelete(moveX, moveY, 3);
+
+                                        if (moveX + 1 < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY, 1);
+                                            forbid.forbidListDelete(moveX + 1, moveY, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX, moveY + 1, 1);
+                                            forbid.forbidListDelete(moveX, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY, 1);
+                                            forbid.forbidListDelete(moveX - 1, moveY, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX, moveY - 1, 1);
+                                            forbid.forbidListDelete(moveX, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX, moveY - 1, 3);
+
+                                        }
+
+
+                                        //LARGE CROSSES
+
+
+                                        if (moveX + 1 < world_dotx_count && moveY + 1 < world_doty_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY + 1, 3);
+
+
+                                        }
+
+                                        if (moveY + 1 < world_doty_count && moveX - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY + 1, 3);
+
+                                        }
+
+                                        if (moveX - 1 >= 0 && moveY - 1 >= 0) {
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX - 1, moveY - 1, 3);
+
+                                        }
+
+                                        if (moveY - 1 >= 0 && moveX < world_dotx_count) {
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 2);
+                                            forbid.forbidListDelete(moveX + 1, moveY - 1, 3);
+
+                                        }
+                                    }
+
+                                    if (!isThisRolling[moveX][moveY])
+                                        isThisRolling[moveX][moveY] = true;
+
+                                    for (int forbiddenRefreshX = 0; forbiddenRefreshX < world_dotx_count; forbiddenRefreshX++) {
+                                        for (int forbiddenRefreshY = 0; forbiddenRefreshY < world_doty_count; forbiddenRefreshY++) {
+
+                                            if (spriteContainer[forbiddenRefreshX][forbiddenRefreshY] != null) {
+
+                                                float gearType = spriteArray[forbiddenRefreshX][forbiddenRefreshY][0].z;
+
+
+                                                if (gearType == 1) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+
+                                                }
+                                                if (gearType == 2) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
+
+                                                    if (forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
+
+
+                                                }
+                                                if (gearType == 3) {
+
+
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 1, forbiddenRefreshX, forbiddenRefreshY, 1);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 2, forbiddenRefreshX, forbiddenRefreshY, 2);
+                                                    forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY, 3, forbiddenRefreshX, forbiddenRefreshY, 3);
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 1, forbiddenRefreshX + 1, forbiddenRefreshY, 1);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 2, forbiddenRefreshX + 1, forbiddenRefreshY, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY, 3, forbiddenRefreshX + 1, forbiddenRefreshY, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 1, forbiddenRefreshX, forbiddenRefreshY + 1, 1);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 2, forbiddenRefreshX, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY + 1, 3, forbiddenRefreshX, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 1, forbiddenRefreshX - 1, forbiddenRefreshY, 1);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 2, forbiddenRefreshX - 1, forbiddenRefreshY, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY, 3, forbiddenRefreshX - 1, forbiddenRefreshY, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 1, forbiddenRefreshX, forbiddenRefreshY - 1, 1);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 2, forbiddenRefreshX, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX, forbiddenRefreshY - 1, 3, forbiddenRefreshX, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    //LARGE CROSSES
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 3);
+
+
+                                                    }
+
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0) {
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX < world_dotx_count) {
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 2);
+                                                        forbid.forbidList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 3);
+
+                                                    }
+
+
+                                                    if (forbiddenRefreshX + 1 < world_dotx_count && forbiddenRefreshY + 1 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshY + 1 < world_doty_count && forbiddenRefreshX - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY + 1, 1);
+                                                    if (forbiddenRefreshX - 1 >= 0 && forbiddenRefreshY - 1 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX - 1, forbiddenRefreshY - 1, 1);
+
+                                                    if (forbiddenRefreshY - 1 >= 0 && forbiddenRefreshX + 1 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1, forbiddenRefreshX + 1, forbiddenRefreshY - 1, 1);
+
+
+                                                    if (forbiddenRefreshX + 2 < world_dotx_count)
+                                                        aList.allowedList(forbiddenRefreshX + 2, forbiddenRefreshY, 3, forbiddenRefreshX + 2, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshX - 2 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX - 2, forbiddenRefreshY, 3, forbiddenRefreshX - 2, forbiddenRefreshY, 3);
+                                                    if (forbiddenRefreshY - 2 >= 0)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY - 2, 3, forbiddenRefreshX, forbiddenRefreshY - 2, 3);
+
+                                                    if (forbiddenRefreshY + 2 < world_doty_count)
+                                                        aList.allowedList(forbiddenRefreshX, forbiddenRefreshY + 2, 3, forbiddenRefreshX, forbiddenRefreshY + 2, 3);
+                                                }
+
+
+                                            }
+
+                                        }
+                                    }
+
+
+                                    for (int rotateCheckX = 0; rotateCheckX < world_dotx_count; rotateCheckX++) {
+                                        for (int rotateChecky = 0; rotateChecky < world_doty_count; rotateChecky++) {
+
+                                            isItRotating[rotateCheckX][rotateChecky].x = 0;
+
+
+                                        }
+                                    }
+
+
+                                    for (int stuckListX = 0; stuckListX < world_dotx_count; stuckListX++) {
+                                        for (int stuckListY = 0; stuckListY < world_doty_count; stuckListY++) {
+                                            for (int stuckListZ = 0; stuckListZ < 24; stuckListZ++) {
+
+                                                stuckCheckList[stuckListX][stuckListY][stuckListZ].z = 0;
+                                                stuckArray[stuckListX][stuckListY][stuckListZ].z = 0;
+                                            }
+                                        }
+                                    }
+                                    stuckCheck = false;
+                                    isItRotating[0][0].x = 1;
+                                    spriteArray[moveX][moveY][0].z = 0;
+
+
+                                }
+                                VariableCalls.buttonCheck = false;
+                            }
+
+                            break;
+                        }
+                        default: {
+
+                            break;
+                        }
+                    }
+                    }
+
+
+            }
                 if (chosenState == 3 && oilAmount >= 1) {
                     if (VariableCalls.buttonCheck && spriteContainer[moveX][moveY] != null) {
-                        checkTimer =-1;
-                        checkTimer2 = -1;
+
                         prefs.putInteger("oil", oilAmount - 1);
 
                         oilAmount -= 1;
@@ -3986,8 +6339,6 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
                 if (chosenState == 4 && bulletAmount >= 1) {
-                    checkTimer =-1;
-                    checkTimer2 = -1;
                     if (VariableCalls.buttonCheck) {
 
                         prefs.putInteger("bullet", bulletAmount - 1);
@@ -4042,13 +6393,8 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
             }
 
-
-            checkTimer =-1;
-            checkTimer2 = -1;
-
         }
 
-    }
 
 
 
@@ -4141,6 +6487,13 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
     }
 
+    public boolean areAllTrue(ArrayList<Boolean> bools) {
+        for (Boolean bool : bools) {
+            if (!bool) return false;  // Return false if any element isn't true.
+        }
+        return true;
+    }
+
     @Override
     public void dispose() {
 
@@ -4151,7 +6504,8 @@ public class Level1 extends ApplicationAdapter implements Screen {
 
 
 
-        controller.dispose();
+        controller.stage.dispose();
+        controller.game.dispose();
         // game.font.dispose();
         pS.stage.dispose();
 

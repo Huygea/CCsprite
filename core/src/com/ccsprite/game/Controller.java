@@ -25,7 +25,7 @@ import static com.ccsprite.game.MyActorKucuk.nextGear;
 import static com.ccsprite.game.VariableCalls.WORLD_HEIGHT;
 import static com.ccsprite.game.VariableCalls.WORLD_WIDTH;
 import static com.ccsprite.game.VariableCalls.fadeOut;
-import static com.ccsprite.game.VariableCalls.world_doty_count;
+
 
 
 public class Controller extends Stage {
@@ -43,11 +43,12 @@ public class Controller extends Stage {
 
     Image buttonA;
     public Image crossHair;
-    public Sprite whiteBox;
-    Image timer;
+    public Image whiteBox;
+    public Image timer;
     public Image bombImg;
     public Image gearImg;
     public Image blowtorchImg;
+    Label timeper;
     Table button;
     MyActorKucuk actor;
    public boolean winCond = false;
@@ -61,9 +62,12 @@ public class Controller extends Stage {
     ScreenEnum scE;
 
 
-    TextureRegion dark,star,buttonC,timerC,whiteBoxC,one,crossHairC,crate,openChest, explosion,youLose,kucuk,orta,buyuk,bomb,kucuk1,orta1,buyuk1,backGroundt,hingeTex,youwinT,blowtorcht,creatureTexture
+    TextureRegion dark,star,buttonC,one,crate,openChest, explosion,kucuk,orta,buyuk,orta1,buyuk1,backGroundt,hingeTex,creatureTexture
             ;
     TextureRegion uiSkin;
+
+    Texture bomb,whiteBoxC, blowtorcht, crossHairC,timerC,kucuk1,goldTex, youlose, youwinT;
+    Image goldIm;
 
 
     Skin skin;
@@ -87,13 +91,15 @@ public class Controller extends Stage {
         texAtlas.dispose();
         stage.dispose();
     }
+    int levelnum;
 
-    public  Controller (final ClickClack game){
-
-
-
+    public  Controller (final ClickClack game, int levelnum){
 
 
+
+
+
+        this.levelnum = levelnum;
         this.game=game;
         prefs = Gdx.app.getPreferences("My Preferences");
         actor =new MyActorKucuk(game);
@@ -103,27 +109,35 @@ public class Controller extends Stage {
         kucuk = texAtlas.findRegion("kucuktamam");
         orta = texAtlas.findRegion("ortatamam");
         buyuk = texAtlas.findRegion("BuyukDisliTamamdir");
-        bomb = texAtlas.findRegion("bomb");
-        kucuk1 = texAtlas.findRegion("kucuksteampunk");
+        //bomb = texAtlas.findRegion("bomb");
+        //kucuk1 = texAtlas.findRegion("kucuksteampunk");
         orta1 = texAtlas.findRegion("ortasteampunk");
         buyuk1 = texAtlas.findRegion("buyuksteampunk");
         backGroundt = texAtlas.findRegion("background");
         hingeTex = texAtlas.findRegion("hinge");
-        youwinT = texAtlas.findRegion("youwin");
-        blowtorcht = texAtlas.findRegion("blowtorch");
+        youwinT = new Texture("youwin.png");
+        //blowtorcht = texAtlas.findRegion("blowtorch");
         creatureTexture = texAtlas.findRegion("cyclops");
-        youLose = texAtlas.findRegion("youLose");
+        youlose = new Texture("youlose.png");
         explosion = texAtlas.findRegion("explosion");
         one = texAtlas.findRegion("one");
-        whiteBoxC = texAtlas.findRegion("timerWhiteBox");
-        timerC = texAtlas.findRegion("timer");
+        //whiteBoxC = texAtlas.findRegion("timerWhiteBox");
+        //timerC = texAtlas.findRegion("timer");
         buttonC = texAtlas.findRegion("button");
         dark = texAtlas.findRegion("dark");
 
+        bomb = (new Texture("bomb.png"));
+        crossHairC = (new Texture("sniper.png"));
+        blowtorcht = (new Texture("oil.png"));
+        timerC = (new Texture("battery.png"));
+        whiteBoxC= new Texture("whiteB.png");
+        kucuk1 = new Texture("smallpin.png");
 
         star = texAtlas.findRegion("star");
 
         openChest = texAtlas.findRegion("openCrate");
+        goldTex = new Texture("gold.png");
+        goldIm = new Image(goldTex);
 
 
 
@@ -139,7 +153,7 @@ public class Controller extends Stage {
 
 
 
-        crossHairC = texAtlas.findRegion("crosshair");
+        //crossHairC = texAtlas.findRegion("crosshair");
 
 
 
@@ -149,7 +163,7 @@ public class Controller extends Stage {
 
 
 
-        skin.getFont("default-font").getData().setScale(0.2f);
+        skin.getFont("default-font").getData().setScale(0.1f);
 
 
 
@@ -157,7 +171,7 @@ public class Controller extends Stage {
 
 
 
-        smallSkin.getFont("default-font").getData().setScale(0.1f);
+        smallSkin.getFont("default-font").getData().setScale(0.05f);
 
 
 
@@ -180,12 +194,17 @@ public class Controller extends Stage {
         lSelection = new TextButton("Level \nSelection", smallSkin);
         oilCount = new Label(String.valueOf(prefs.getInteger("oil",5)), smallSkin);
 
-        goldCount = new Label(String.valueOf("Gold " + prefs.getInteger("gold",100)), smallSkin);
+        goldCount = new Label(String.valueOf(prefs.getInteger("gold",100)), smallSkin);
 
+        goldIm.setSize(5,5/0.634f);
+        goldIm.setPosition(WORLD_WIDTH/2-goldIm.getWidth()/2,WORLD_HEIGHT-15);
+
+        goldCount.setPosition(goldIm.getX()+8,WORLD_HEIGHT-15);
+        timeper = new Label(VariableCalls.timeLeft/VariableCalls.timeAll*100+"", smallSkin);
 
         prefs.flush();
         winSprite = new Image(youwinT);
-        loseSprite = new Image(youLose);
+        loseSprite = new Image(youlose);
         gold = prefs.getInteger("gold", 100);
         game.font.getData().setScale(0.3f);
 
@@ -211,12 +230,13 @@ public class Controller extends Stage {
         viewport = new FitViewport(VariableCalls.WORLD_WIDTH,VariableCalls.WORLD_HEIGHT, camera);
         stage = new Stage(viewport, game.batch);
 
+        stage.addActor(goldIm);
+        stage.addActor(goldCount);
 
         Gdx.input.setInputProcessor(stage);
-        Table timerTable = new Table();
-        Table table = new Table();
 
-        table.left().bottom();
+
+
 
         button =new Table();
         uiElements = new Table();
@@ -243,7 +263,8 @@ public class Controller extends Stage {
 
             blowtorchImg =new Image(blowtorcht);
 
-            whiteBox = new Sprite(whiteBoxC);
+            whiteBox = new Image(whiteBoxC);
+
             timer = new Image(timerC);
             crossHair = new Image(crossHairC);
 
@@ -360,7 +381,9 @@ public class Controller extends Stage {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 VariableCalls.buttonCheck  =true;
                 buttonPressed = false;
-            }
+
+
+                 }
         });
 
 /*
@@ -430,18 +453,20 @@ public class Controller extends Stage {
 
        // timerTable.add(timer).size(25,10);
        // timerTable.add().pad(0,5,0,5);
-        timerTable.add().pad(5);
-        timerTable.add(timer).size(15, whiteBox.getHeight());
-
-        timerTable.add().pad(5);
-        whiteBox.setSize((1/VariableCalls.timeDivider)*VariableCalls.timeLeft * 100, 10 );
-        whiteBox.setPosition(WORLD_WIDTH/2 - 50, WORLD_HEIGHT-125);
-
-        timerTable.setPosition(whiteBox.getX()-10,whiteBox.getY() + 5);
-        timerTable.setName("timer");
+      //  timerTable.add().pad(5);
 
 
-        stage.addActor(timerTable);
+
+
+
+        whiteBox.setSize(VariableCalls.timeLeft/2, 10 );
+        whiteBox.setPosition(WORLD_WIDTH/2 - 25, 9);
+        timer.setSize(60,whiteBox.getHeight()+2.7f);
+        timer.setPosition(WORLD_WIDTH/2-28,8);
+        timeper.setPosition(timer.getX()+timeper.getWidth()/2,10);
+        stage.addActor(whiteBox);
+        stage.addActor(timer);
+        stage.addActor(timeper);
 
 
 
@@ -655,21 +680,24 @@ winSprite.setSize(WORLD_WIDTH/4, WORLD_HEIGHT/4);
         stage.draw();
         game.batch.begin();
 
-        prefs.flush(
-
-
-        );
-
-
+        goldCount.setText(String.valueOf(prefs.getInteger("gold",100)));
+        whiteBox.setSize(VariableCalls.timeLeft/2, 11 );
+        prefs.flush();
+        timeper.setText(String.format("%.01f", VariableCalls.timeLeft/VariableCalls.timeAll*100f));
+        timeper.setPosition(timer.getX()+18,10);
 
 
         if(timerCheck)
-        whiteBox.draw(game.batch);
+
 
 
         if(winCond){
 
             actor.remove();
+            buttonA.remove();
+            bombImg.remove();
+            crossHair.remove();
+            blowtorchImg.remove();
 
 
 
@@ -690,7 +718,7 @@ winSprite.setSize(WORLD_WIDTH/4, WORLD_HEIGHT/4);
                     VariableCalls.gameEnd = false;
                     game.getScreen().dispose();
 
-                    game.setScreen(scE.levelSwitcher(VariableCalls.levelNum, game));
+                    game.setScreen(scE.levelSwitcher(levelnum, game));
                       //  game.setScreen(new MainMenuScreen(game));
                     break;
 
@@ -714,7 +742,7 @@ winSprite.setSize(WORLD_WIDTH/4, WORLD_HEIGHT/4);
                     VariableCalls.gameEnd = false;
                     game.getScreen().dispose();
 
-                    game.setScreen(scE.levelSwitcher(VariableCalls.levelNum+1, game));
+                    game.setScreen(scE.levelSwitcher(levelnum+1, game));
 
 
                 }

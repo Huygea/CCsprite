@@ -1,11 +1,11 @@
 com/ccsprite/game/BuildConfig.java
  com.ccsprite.game.BuildConfig
-com/ccsprite/game/AndroidLauncher.java
- com.ccsprite.game.AndroidLauncher
+com/badlogicgames/gdx/controllers/R.java
+ com.badlogicgames.gdx.controllers.R
 com/ccsprite/game/R.java
  com.ccsprite.game.R
  com.ccsprite.game.R$drawable
  com.ccsprite.game.R$string
  com.ccsprite.game.R$style
-com/badlogicgames/gdx/controllers/R.java
- com.badlogicgames.gdx.controllers.R
+com/ccsprite/game/AndroidLauncher.java
+ com.ccsprite.game.AndroidLauncher
